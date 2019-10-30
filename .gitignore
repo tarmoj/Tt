@@ -1,0 +1,3 @@
+*.backup
+*.pro.user
+build*
