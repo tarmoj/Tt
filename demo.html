@@ -21,7 +21,7 @@ user-select:none;
 	}
 	</style>
     <script src="ws-functions.js"></script> <!-- websocket functions -->
-    <script src="server_address.js"></script> <!-- default address of the ws server -->
+    <!-- <script src="server_address.js"></script>  default address of the ws server -->
     <script>
     
 
@@ -71,7 +71,7 @@ user-select:none;
 	
 	
 	window.onload = function() {
-		document.getElementById("url").value = serverUrl;
+		document.getElementById("url").value = "ws://192.168.1.199:9009/ws"; //serverUrl;
 		document.getElementById("harmonicLabel").innerHTML=document.getElementById("harmonic").value
 		doConnect();
 		var playButton = document.getElementById("play");
