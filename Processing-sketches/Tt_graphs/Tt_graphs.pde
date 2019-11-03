@@ -83,23 +83,36 @@ void drawLines()
   fill(255);
   rect(margin,margin,side, side);
   
-  // 1 vertical f
+  // main components 
   drawLine('f', f);
   drawLine('a', a);
   drawLine('c', c);
   drawLine('i', i);
   
-  // diagonals 1
+  // diagonals 1 ----------------------------------
   
- float d1_1x, d1_1y, d1_2x, d1_2y ; // two points of diagonal
- d1_1x = f; d1_1y= a; d1_2y = i; 
- d1_2x = (f>=c) ? 1 : 0;
- drawRelative(d1_1x, d1_1y, d1_2x, d1_2y, 0);
+ float d1_x1, d1_y1, d1_x2, d1_y2 ; // two points of diagonal
+ d1_x1 = f; d1_y1= a; d1_y2 = i; 
+ d1_x2 = (f>=c) ? 1 : 0;
+ drawRelative(d1_x1, d1_y1, d1_x2, d1_y2, 0);
  
- float d2_1x, d2_1y, d2_2x, d2_2y ; // two points of diagonal
- d2_1x = c; d2_1y= i; d2_2y = a; 
- d2_2x = (f>=c) ? 1 : 0;
- drawRelative(d2_1x, d2_1y, d2_2x, d2_2y, 0);
+ float d2_x1, d2_y1, d2_x2, d2_y2 ; // two points of diagonal
+ d2_x1 = c; d2_y1= i; d2_y2 = a; 
+ d2_x2 = (f>=c) ? 1 : 0;
+ drawRelative(d2_x1, d2_y1, d2_x2, d2_y2, 0);
+ 
+ // perpendiculars y, z ------------------------
+ 
+ // find intersection of the diagonals (connecting lines) 
+ float deltay = d1_y2 - d1_y1;
+ float deltax = d1_x2 - d1_x1;
+ 
+ // formula for y:
+ float y, x = abs(d1_x2 - d1_x1)/2;
+ y = ( deltay * (x-d1_x1) + deltax * d1_y1) / deltax;
+ circle(margin +x*side, margin +y*side, 5);
+ 
+ println("X, ", x, " Y: ", y);
  
  
 
