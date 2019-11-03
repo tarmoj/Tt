@@ -1,10 +1,119 @@
 <html>
   <head>
-    <title></title>
-    <meta content="">
-    <style></style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>React Local</title>
+    <script
+      type="application/javascript"
+      src="https://unpkg.com/react@16.0.0/umd/react.production.min.js"
+    ></script>
+    <script
+      type="application/javascript"
+      src="https://unpkg.com/react-dom@16.0.0/umd/react-dom.production.min.js"
+    ></script>
+    <script
+      type="application/javascript"
+      src="https://unpkg.com/babel-standalone@6.26.0/babel.js"
+    ></script>
+    <link rel="stylesheet" href="styles.css" />
   </head>
+
   <body>
-  <p>Hello World</p>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const rootElement = document.getElementById("root");
+
+      class Perfocard extends React.Component {
+        constructor(props) {
+          super(props);
+
+          this.state = {
+            blocks: {}
+          };
+
+          this.values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+          this.params = ["FRQ", "AMP", "COL", "INT"];
+
+          this.renderBlock = this.renderBlock.bind(this);
+          this.onValueClick = this.onValueClick.bind(this);
+        }
+
+        renderBlock(block) {
+          const blockFilled =
+		  this.state.blocks[block] && Object.keys(this.state.blocks[block]).length === 4;
+          return (
+            <table className={blockFilled ? "blockFilled" : ""}>
+              {this.params.map((param, i) => {
+                const touchedRow =
+                  this.state.blocks[block] && this.state.blocks[block][param];
+                return (
+                  <tr key={i} className={`row ${touchedRow ? "touched" : ""}`}>
+                    {this.values.map((value, index) => {
+                      const touched =
+                        this.state.blocks[block] &&
+                        this.state.blocks[block][param] &&
+                        this.state.blocks[block][param] === value;
+                      return (
+                        <td
+                          key={index}
+                          className={touched ? "touched" : ""}
+                          onClick={() => this.onValueClick(block, param, value)}
+                        >
+                          {value}
+                        </td>
+                      );
+                    })}
+                    <td className="column">{param}</td>
+                  </tr>
+                );
+              })}
+            </table>
+          );
+        }
+
+        onValueClick(block, param, value) {
+          this.setState(state => {
+            const blocks = state.blocks;
+
+            blocks[block] = {
+              ...blocks[block],
+              [param]: value
+            };
+
+            return {
+              blocks
+            };
+          });
+          alert(`Block ${block} param ${param} was clicked with ${value}`);
+        }
+
+        render() {
+          return (
+            <div>
+              {this.values.map((value, index) => {
+                return (
+                  <div className="block">
+                    <div>{value}</div>
+                    {this.renderBlock(index)}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        }
+      }
+
+      function App() {
+        return (
+          <div>
+            <Perfocard />
+          </div>
+        );
+      }
+
+      ReactDOM.render(<App />, rootElement);
+    </script>
   </body>
 </html>

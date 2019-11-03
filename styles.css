@@ -1,0 +1,46 @@
+.shopping-list {
+  background-color: azure;
+}
+
+table {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  padding: 8px;
+}
+
+table.blockFilled {
+    background-color: darkgrey;
+}
+
+.row > * {
+    flex: 1 1 80px;
+}
+
+.row.touched {
+    background-color: gray;
+    pointer-events: none;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+td {
+    cursor: pointer;
+}
+
+td.touched {
+    background-color: aqua;
+}
+
+.column {
+    border-left: 1px solid black;
+    padding-left: 4px;
+}
+
+.block {
+    padding-top: 16px;
+}
