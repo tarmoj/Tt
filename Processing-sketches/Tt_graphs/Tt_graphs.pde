@@ -10,7 +10,7 @@ float margin = 20;
 float side;
 
 
-void setup() 
+void setup()  
 {
   size(400, 420);
   side = width-2*margin;
@@ -33,7 +33,14 @@ void randomValues()
   println("f: ", f, " a: ",a, " c: ",  c, " i: ", i);
 }
 
-void drawLine(char letter, float value) 
+void drawRelative(float x1, float y1, float x2, float y2, int color_)  // coordinates realtive of the rectangle 0 ..1
+{
+   stroke(color_);
+  //strokeWeight(2);
+  line (margin + x1*side, margin + y1*side, margin + x2*side, margin + y2*side);
+
+}
+void drawLine(char letter, float value)  // maybe better x1, y1, y1, y2, color)
 {
   float x=0, y=0;
   int color_ = 0;
@@ -81,6 +88,20 @@ void drawLines()
   drawLine('a', a);
   drawLine('c', c);
   drawLine('i', i);
+  
+  // diagonals 1
+  
+ float d1_1x, d1_1y, d1_2x, d1_2y ; // two points of diagonal
+ d1_1x = f; d1_1y= a; d1_2y = i; 
+ d1_2x = (f>=c) ? 1 : 0;
+ drawRelative(d1_1x, d1_1y, d1_2x, d1_2y, 0);
+ 
+ float d2_1x, d2_1y, d2_2x, d2_2y ; // two points of diagonal
+ d2_1x = c; d2_1y= i; d2_2y = a; 
+ d2_2x = (f>=c) ? 1 : 0;
+ drawRelative(d2_1x, d2_1y, d2_2x, d2_2y, 0);
+ 
+ 
 
   
 }
