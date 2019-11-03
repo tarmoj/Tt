@@ -49,7 +49,6 @@
                 const touchedRow =
                   this.state.blocks[block] && this.state.blocks[block][param];
 
-				console.log('STATE: ', this.state.blocks);
                 return (
                   <tr key={i} className={`row ${touchedRow ? "touched" : ""}`}>
                     {this.values.map((value, index) => {
@@ -92,6 +91,7 @@
         }
 
         render() {
+		console.log('STATE: ', this.state.blocks);
           return (
             <div>
               {this.values.map((value, index) => {
