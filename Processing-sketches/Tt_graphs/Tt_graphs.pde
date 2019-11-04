@@ -4,7 +4,7 @@
 int HORIZONTAL = 0, VERTICAL = 1, DIAGONAL = 2, OTHER = 3; // takes 2 bits
 int SOLID = 0, DASHED = 1; 
 
-float f, a, c, i, y, z;
+float f, a, c, i, y, z, d, e;
 int bgColor = 240;
 float margin = 20;
 float side;
@@ -160,6 +160,28 @@ void drawLines()
   drawRelative(z,y, 0,y  ,0);
   textAlign(RIGHT, CENTER);
   text ("y", margin - 3, margin + (1-y)*side);
+  
+  
+  // diagonals 2 ---------------------------------------
+  float helperx = (f>=c) ? 0 : 1;
+  drawRelative(c,i, helperx,a, 0  );
+  drawRelative(f,a, helperx,i, 0  );
+  
+  // perpendiculars d, e ------------------------
+  
+  interSection = getIntersection(c,i, helperx,a,  f,a, helperx,i    );
+  d = interSection[0]; e = interSection[1];
+  
+  drawRelative(d,e, d,1  , 180);
+  textSize(18);
+  fill(0);
+  textAlign(CENTER, BOTTOM);
+  text ("d", margin + side*d, margin -3 );
+  
+  drawRelative(d, e, 1, e, 180 );
+  textAlign(LEFT, CENTER);
+  text ("e", margin + side  +3, margin + (1-e)*side);
+  
   
 }
 
