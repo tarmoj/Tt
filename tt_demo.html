@@ -42,7 +42,8 @@
 
         renderBlock(block) {
           const blockFilled =
-		  this.state.blocks[block] && Object.keys(this.state.blocks[block]).length === 4;
+            this.state.blocks[block] &&
+            Object.keys(this.state.blocks[block]).length === 4;
           return (
             <table className={blockFilled ? "blockFilled" : ""}>
               {this.params.map((param, i) => {
@@ -62,7 +63,9 @@
                           className={touched ? "touched" : ""}
                           onClick={() => this.onValueClick(block, param, value)}
                         >
-                          {value}
+                          <div class="value">
+                            <div>{value}</div>
+                          </div>
                         </td>
                       );
                     })}
@@ -91,7 +94,7 @@
         }
 
         render() {
-		console.log('STATE: ', this.state.blocks);
+          console.log("STATE: ", this.state.blocks);
           return (
             <div>
               {this.values.map((value, index) => {

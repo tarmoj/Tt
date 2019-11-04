@@ -8,6 +8,7 @@ table {
   flex-direction: column;
   border: 1px solid black;
   padding: 8px;
+  box-shadow: 5px 10px #d9d3d2;
 }
 
 table.blockFilled {
@@ -19,7 +20,7 @@ table.blockFilled {
 }
 
 .row.touched {
-    background-color: gray;
+    background-color: #c9b5b5;;
     pointer-events: none;
 }
 
@@ -32,8 +33,18 @@ td {
     cursor: pointer;
 }
 
-td.touched {
-    background-color: aqua;
+td.touched > .value {
+    background-color: #635a5a;
+    border-radius: 10px;
+    width: 18px;
+    position: relative;
+    right: 4px;
+}
+
+td.touched > .value > div {
+    position: relative;
+    left: 4px;
+    color: white;
 }
 
 .column {
