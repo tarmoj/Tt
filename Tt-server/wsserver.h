@@ -41,6 +41,7 @@ private:
 	QWebSocket * csoundClient;
 	int currentClient;
 	bool paused;
+    QHash <QString, QVector<double>> resultsHash;
 };
 
 

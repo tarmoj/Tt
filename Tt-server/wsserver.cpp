@@ -23,6 +23,14 @@ WsServer::WsServer(quint16 port, QObject *parent) :
                 this, &WsServer::onNewConnection);
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &WsServer::closed);
     }
+    QVector<double>  test(4);
+    test[0] = 0.1; test[1]= 0.2;
+    resultsHash.insert("my", test);
+    qDebug() << resultsHash.value("my")[1];
+    QVector<double>  test2 = resultsHash.value("my");
+    test2[1] = 0.5;
+    resultsHash.insert("my", test2);
+    qDebug() << resultsHash.value("my")[1];
 }
 
 
