@@ -57,12 +57,26 @@ void WsServer::processTextMessage(QString message)
 	qDebug()<<message;
 
 	emit newMessage(message);
+    //QString const keyword = "column";
 
-    QStringList messageParts = message.split(" ");
+    // message comes in column_voteNumber_columNumber_value_column // "card_<nr>_column_<nr>_<value>[_column_<nr>_<value>]"
 
-//	if (message.startsWith("csound")) { // mark this socket
+    if (message.startsWith("card")) {
+        QStringList messageParts = message.split("_");
+        int cardNUmber = messageParts[2].toInt();
+        while (messageParts.contains( "column")) {
+            int dataIndex = messageParts.indexOf("column");
+            if (messageParts.size() >= dataIndex + 2) {
+                int column = messageParts[dataIndex+1].toInt();
+                double value = messageParts[dataIndex+2].toFloat();
+                qDebug() << "data at " << dataIndex << " column: "  << column << " value: " << value;
+            }
+            messageParts.removeAt(dataIndex);
 
-//	}
+        }
+
+
+    }
 
 
 }
