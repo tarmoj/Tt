@@ -23,14 +23,7 @@ WsServer::WsServer(quint16 port, QObject *parent) :
                 this, &WsServer::onNewConnection);
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &WsServer::closed);
     }
-    QVector<double>  test(4);
-    test[0] = 0.1; test[1]= 0.2;
-    resultsHash.insert("my", test);
-    qDebug() << resultsHash.value("my")[1];
-    QVector<double>  test2 = resultsHash.value("my");
-    test2[1] = 0.5;
-    resultsHash.insert("my", test2);
-    qDebug() << resultsHash.value("my")[1];
+
 }
 
 
@@ -63,29 +56,39 @@ void WsServer::processTextMessage(QString message)
         return;
     }
 	qDebug()<<message;
+	QString peerAdress = pClient->peerAddress().toString();
 
 	emit newMessage(message);
-    //QString const keyword = "column";
 
     // message comes in column_voteNumber_columNumber_value_column // "card_<nr>_column_<nr>_<value>[_column_<nr>_<value>]"
 
     if (message.startsWith("card")) {
         QStringList messageParts = message.split("_");
-        int cardNUmber = messageParts[2].toInt();
-        while (messageParts.contains( "column")) {
-            int dataIndex = messageParts.indexOf("column");
+		int cardNumber = messageParts[2].toInt();
+		if (cardNumber<0 || cardNumber>8) {
+			qDebug() << "Wrong card: " << cardNumber;
+			return;
+		}
+
+		QVector <double> tempData(4*9);
+		if (resultsHash.contains(peerAdress) ) {
+			tempData = resultsHash.value(peerAdress);
+		} else {
+			tempData.fill(-1);
+		}
+		while (messageParts.contains( "column")) {
+
+			int dataIndex = messageParts.indexOf("column");
             if (messageParts.size() >= dataIndex + 2) {
                 int column = messageParts[dataIndex+1].toInt();
-                double value = messageParts[dataIndex+2].toFloat();
-                qDebug() << "data at " << dataIndex << " column: "  << column << " value: " << value;
+				double value = messageParts[dataIndex+2].toDouble();
+				//qDebug() << "data at " << dataIndex << " column: "  << column << " value: " << value;
+				tempData[cardNumber*4 + column]=value;
             }
             messageParts.removeAt(dataIndex);
-
         }
-
-
+		resultsHash[peerAdress] = tempData;
     }
-
 
 }
 
