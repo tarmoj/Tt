@@ -4,7 +4,7 @@
     <meta content="text/html; charset=utf-8" http-equiv="content-type">
         <meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=0.7, user-scalable=0" />
 
-    <title>Audience orchestra - harmonics</title>
+    <title>Tt - test</title>
     <meta content="Tarmo Johannes" id="author">
 	
 	<link type="text/css" rel="stylesheet" href="audience.css">
@@ -25,173 +25,41 @@ user-select:none;
     <script>
     
 
-    function onMessage(evt) // WS function -  probably not needed here.
+    function onMessage(evt) 
     {
-            // does server send any messages at all?
             writeToScreen("Message from server: " + evt.data + '\n');
             var mess_array = evt.data.split(" ");
-            if (mess_array[0]=="loadIndex") {
-                console.log("loading Index page");
-                window.location.href = "index.html";
-            }
-            if (mess_array[0]=="loadJudge") {
-                console.log("loading Judge page");
-                window.location.href = "judge.html";
-            }
-            if (mess_array[0]=="loadPlay") {
-                console.log("loading Play page");
-                window.location.href = "play.html";
-            }
-            if (mess_array[0]=="loadScore") {
-                console.log("loading Score page");
-                window.location.href = "score.html";
-            }
+            
             //console.log(mess_array[0]);
            
     }
-
-	var lastHarmonic = "0";
-	function sendNote(onoff) {
-		
-		var sendString;
-		
-		if (onoff==1) { // add "PLAY" to make it different from similar signals of score UI
-			lastHarmonic = document.getElementById("harmonic").value;
-			sendString = "harmonicON "+ lastHarmonic + " " +  document.getElementById("volume").value + " " + document.getElementById("pan").value + " " + document.getElementById("sound").value;
-	
-		} else {
-			sendString = "harmonicOFF " + lastHarmonic+ " 0";
-			lastHarmonic = "0"; // to signal that note is not playing for mouseout
-		}
-		console.log(sendString);
+    
+    function sendValues() {
+		var sendString = "card_" + document.getElementById("card").value 
+			+ "_column_0_" + document.getElementById("frq").value 
+			+ "_column_1_" + document.getElementById("amp").value 
+			+ "_column_2_" + document.getElementById("col").value 
+			+ "_column_3_" + document.getElementById("int").value;
 		doSend(sendString);
+    }
 
-	}
-	
-	
 	
 	window.onload = function() {
-		document.getElementById("url").value = "ws://192.168.1.199:9009/ws"; //serverUrl;
-		document.getElementById("harmonicLabel").innerHTML=document.getElementById("harmonic").value
-		doConnect();
-		var playButton = document.getElementById("play");
-		if ("ontouchstart" in document.documentElement) { // check if touchdevice or computer
-			playButton.ontouchstart = function(){sendNote(1);}
-			playButton.ontouchend = function(){sendNote(0);}
-			playButton.ontouchleave = function() { 
-				if (lastHarmonic != "0") {
-					//writeToScreen("Turning not off on TOUCHLEAVE"); // not sure if it is necessary
-					sendNote(0);	
-				}
-			}
-			
-		} else {
-			playButton.onmousedown = function(){sendNote(1);}
-			playButton.onmouseup = function(){sendNote(0);}
-			playButton.onmouseout = function() { 
-				if (lastHarmonic != "0") {
-					//console.log("Turning not off on MOUSEOUT");
-					sendNote(0);	
-				}
-			}
-		}	
+		document.getElementById("url").value = "ws://127.0.0.1:9009/ws"; //serverUrl;
+		doConnect();	
 	}
 	
-	// for testing: start startTest(<testers>); stop: stopTesting = false;
-	
-	var stopTesting = false;
-	function startTest(testers) {
-		stopTesting = false; // when turned off before
-		testers = testers || 6;
-		console.log("Testing with "+ testers.toString() + " virtual testers");
-		for (i=0;i<testers; i++)
-			setTimeout(function(){ testNoteOn()},100+Math.random()*2000);
-			
-	}
-	
-	function testNoteOn() {
-		var sendString;
-		var harm = 0;
-		harm = Math.ceil(Math.random()*16);
-		sendString = "harmonicON "+  harm.toString() + " " +  Math.random().toString() + " " + Math.random().toString();
-		console.log(sendString);
-		setTimeout(function(){ testNoteOff(harm)},100+Math.random()*2000);
-		doSend(sendString);
-	
-	}
-	
-	function testNoteOff(harm) {
-		var sendString = "harmonicOFF "+ harm+ " 0";
-		console.log(sendString);
-		doSend(sendString);
-		if (!stopTesting)  // set it tru to stop testing cycle
-			setTimeout(function(){ testNoteOn()},100+Math.random()*2000);
-		
-	
-	}
-    
-    
     </script>
 
   </head>
   <body>
-	<h1>Harmonics</h1>
-	 
-	Sound type: <select id="sound" style="font-size: 18px;">
-      <option value="0">Tone</option>
-      <option value="1">Bell</option>
-    </select>
-	<table style="text-align:center; <!--border: 1px solid white-->">
-		<tr>
-			<td>HIGH</td>
-			<td>LOUD</td>
-		
-		</tr>
-		
-		<tr style="height:140px; text-align:center;">
-			<td><input id="harmonic" type="range" class="range" min=1 max=16 value=4 step=1 oninput='harmonicLabel.innerHTML=this.value'></td>
-			<td><input id="volume" type="range" class="range" min=0.1 max=1 value=0.5 step=0.01> </td>
-		
-		</tr>
-	
-		<tr>
-			<td>LOW</td>
-			<td>SOFT</td>
-		
-		</tr>
-		<tr>
-			<td><label id="harmonicLabel"></label></i> </td>
-			<td></td>
-		
-		</tr>
-		<tr>
-			<td><i>Harmonic (overtone) number</i> </td>
-			<td><i>Volume</i></td>
-		
-		</tr>
-		
-	</table>
-	<br>
-	<br>Panning:<br>
-	<table  style="width:410px; text-align:center;<!--border: 1px solid white-->">
-            <tr style=" text-align:center;">
-            <td>Left</td>
-            
-            <td><input id="pan" type="range" class="range" style="transform:rotate(0deg)" min=0 max=1 value=0.5 step=0.01></td>
-            <td>Right</td>
-            </tr>
-            <tr style="height:30px;"></tr>
-            <tr >
-                <td>
-                </td>
-                <td><button id="play" style="width:80%; height:80px;" >PLAY</button>
-                </td>
-                <td>
-                </td>
-            </tr>
-	</table>
-			
-	<form name="myform">
+	<h1>Tt test</h1>
+	Card: <input type="number" id="card"  min="0" max="8" value="0"/> <br>
+	FRQ: <input type="range" id="frq" min="0" max="1" value="0.5" step="0.1"/> <br>
+	AMP: <input type="range" id="amp" min="0" max="1" value="0.5" step="0.1"/> <br>
+	COL: <input type="range" id="col" min="0" max="1" value="0.5" step="0.1"/> <br>
+	INT: <input type="range" id="int" min="0" max="1" value="0.5" step="0.1"/> <br>
+	<button id="sendButton" onclick="sendValues();">Send</button>
     <br>
     
     Server: <input value="ws://192.168.1.199:9009/ws" id="url" type="text" >
@@ -200,9 +68,6 @@ user-select:none;
     <br>
      <p><textarea id="outputtext" rows="5" cols="30" readonly ></textarea> </p>
      
-	
-	
-	</form>
 	
   </body>
 </html>
