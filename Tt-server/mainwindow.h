@@ -25,6 +25,8 @@ private slots:
 
 	void on_clearButton_clicked();
 
+	void on_analyzeButton_clicked();
+
 private:
 	Ui::MainWindow *ui;
 	WsServer *wsServer;

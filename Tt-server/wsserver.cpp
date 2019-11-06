@@ -124,4 +124,33 @@ void WsServer::send2all(QString message)
 	}
 }
 
+void WsServer::getSum(int card, int column)
+{
+	QHashIterator<QString, QVector<double>> i(resultsHash);
+	int count = 0;
+	double sum = 0;
+	while (i.hasNext()) {
+		i.next(); // doesn't it skip the first?
+		double value = i.value()[card*4 + column];
+		qDebug() << i.key() << " " << value;
+		if (value>=0) {
+			count++;
+			sum += value;
+		}
+	}
+	qDebug() << "Count: " << count << " sum: " << sum;
+}
+
+void WsServer::analyze(int card)
+{
+	if (card==0) {
+		getSum(0,0);
+		getSum(0, 1);
+		getSum(0, 2);
+		getSum(0, 3);
+	} else {
+
+	}
+}
+
 

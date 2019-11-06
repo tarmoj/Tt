@@ -21,6 +21,8 @@ public:
 	void sendMessage(QWebSocket *socket, QString message);
 	void send2all(QString message);
 	void setPaused(bool onOff);
+	void getSum(int card, int column); // TODO: return stuct (?QPair) { int count; double sum; }
+	void analyze(int card);
 
 Q_SIGNALS:
     void closed();

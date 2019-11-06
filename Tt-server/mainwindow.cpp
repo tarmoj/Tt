@@ -33,3 +33,8 @@ void MainWindow::on_clearButton_clicked()
 {
 	ui->messagesTextEdit->clear();
 }
+
+void MainWindow::on_analyzeButton_clicked()
+{
+	wsServer->analyze(0);
+}
