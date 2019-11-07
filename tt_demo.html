@@ -21,7 +21,8 @@
 
   <body>
     <div id="root"></div>
-
+    <script src="ws-functions.js"></script>
+    <script src="server_address.js"></script>
     <script type="text/babel">
       const rootElement = document.getElementById("root");
 
@@ -30,46 +31,89 @@
           super(props);
 
           this.state = {
-            blocks: {}
+            url: "",
+            block: 0,
+            card: 0,
+            data: {},
+            submitDisabled: true
+          };
+
+          this.description = {
+            0: "Please pick one value for each parameter. FRQ - sound frequency, AMP - sound amplitude, COL - hue of light, INT - intensity of light",
+            1: "Please pick one value for one parameter only. FRQ - sound frequency, AMP - sound amplitude, COL - hue of light, INT - intensity of light",
+            2: "Please pick one value for one parameter only. FRQ - sound frequency, AMP - sound amplitude, COL - hue of light, INT - intensity of light",
+            3: "Please pick one value for one parameter only. FRQ - sound frequency, AMP - sound amplitude, COL - hue of light, INT - intensity of light"
           };
 
           this.values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
           this.params = ["FRQ", "AMP", "COL", "INT"];
 
           this.renderBlock = this.renderBlock.bind(this);
+          this.renderHeader = this.renderHeader.bind(this);
           this.onValueClick = this.onValueClick.bind(this);
+          this.submit = this.submit.bind(this);
+          this.renderDescriptionBox = this.renderDescriptionBox.bind(this);
+          this.renderConnectBtn = this.renderConnectBtn.bind(this);
         }
 
-        renderBlock(block) {
+        submit() {
+          const { data, block, card } = this.state;
+          const { FRQ, AMP, COL, INT } = data[block];
+          const sendString = `card_${card}_column_0_${FRQ}_column_1_${AMP}_column_2_${COL}_column_3_${INT}`;
+
+          doSend(sendString);
+        }
+
+        componentDidMount() {
+          doConnect(serverUrl);
+        }
+
+        renderHeader() {
+          return (
+            <tr className="header row">
+              {this.params.map((value, index) => {
+                return (
+                  <td key={index} className="param">
+                    <div class="paramValue">
+                      <div>{value}</div>
+                    </div>
+                  </td>
+                );
+              })}
+            </tr>
+          );
+        }
+
+        renderBlock() {
+          const { data, block } = this.state;
+          const currentBlock = data[block];
           const blockFilled =
-            this.state.blocks[block] &&
-            Object.keys(this.state.blocks[block]).length === 4;
+            currentBlock && Object.keys(currentBlock).length === 4;
+
           return (
             <table className={blockFilled ? "blockFilled" : ""}>
-              {this.params.map((param, i) => {
-                const touchedRow =
-                  this.state.blocks[block] && this.state.blocks[block][param];
-
+              {this.renderHeader()}
+              {this.values.map((param, i) => {
                 return (
-                  <tr key={i} className={`row ${touchedRow ? "touched" : ""}`}>
-                    {this.values.map((value, index) => {
+                  <tr key={i} className="row">
+                    {this.params.map((value, index) => {
                       const touched =
-                        this.state.blocks[block] &&
-                        this.state.blocks[block][param] &&
-                        this.state.blocks[block][param] === value;
+                        currentBlock &&
+                        typeof currentBlock[value] === "number" &&
+                        currentBlock[value] === i;
+
                       return (
                         <td
                           key={index}
                           className={touched ? "touched" : ""}
-                          onClick={() => this.onValueClick(block, param, value)}
+                          onClick={() => this.onValueClick(block, value, param)}
                         >
                           <div class="value">
-                            <div>{value}</div>
+                            <div>{i}</div>
                           </div>
                         </td>
                       );
                     })}
-                    <td className="column">{param}</td>
                   </tr>
                 );
               })}
@@ -79,32 +123,85 @@
 
         onValueClick(block, param, value) {
           this.setState(state => {
-            const blocks = state.blocks;
+            const { data, submitDisabled } = state;
+            let disabled = submitDisabled;
 
-            blocks[block] = {
-              ...blocks[block],
+            data[block] = {
+              ...data[block],
               [param]: value
             };
 
+            if (
+              (block === 0 && Object.keys(data[block]).length === 4) ||
+              ([2, 3, 4].includes(block) && Object.keys(data[block]).length === 1)
+            ) {
+              disabled = false;
+            }
+
             return {
-              blocks
+              data, submitDisabled: disabled
             };
           });
-          alert(`Block ${block} param ${param} was clicked with ${value}`);
+        }
+
+        renderConnectBtn() {
+          return (
+            <div className="helpers">
+              <div className="connectRow">
+                <div className="server">Server</div>
+                <input
+                  className="urlInput"
+                  value="ws://192.168.1.199:9009/ws"
+                  id="url"
+                  type="text"
+                />
+                <button
+                  className="conncet"
+                  type="button"
+                  id="connectButton"
+                  onClick={() => doConnect(serverUrl)}
+                >
+                  Connect
+                </button>
+              </div>
+              <p>
+                <textarea
+                  className="output"
+                  id="outputtext"
+                  rows="5"
+                  cols="30"
+                  readonly
+                ></textarea>
+              </p>
+            </div>
+          );
+        }
+
+        renderDescriptionBox() {
+          return (
+            <div className="description">
+              {this.description[this.state.block]}
+            </div>
+          );
         }
 
         render() {
-          console.log("STATE: ", this.state.blocks);
           return (
             <div>
-              {this.values.map((value, index) => {
-                return (
-                  <div className="block">
-                    <div>{value}</div>
-                    {this.renderBlock(index)}
-                  </div>
-                );
-              })}
+              <div className="block">
+                {this.renderDescriptionBox()}
+                {this.renderBlock()}
+                <div className="submit">
+                  <button
+                    type="button"
+                    onClick={this.submit}
+                    disabled={this.state.submitDisabled}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+              {this.renderConnectBtn()}
             </div>
           );
         }

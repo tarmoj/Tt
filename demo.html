@@ -36,7 +36,7 @@
 	
 	window.onload = function() {
 		document.getElementById("url").value = serverUrl; //serverUrl;
-		doConnect();	
+		doConnect(serverUrl);	
 	}
 	
     </script>
@@ -53,7 +53,7 @@
     <br>
     
     Server: <input value="ws://192.168.1.199:9009/ws" id="url" type="text" >
-    <button type="button" id="connectButton" onclick="doConnect();">Connect</button>
+    <button type="button" id="connectButton" onclick="doConnect(serverUrl);">Connect</button>
     <br>
     <br>
      <p><textarea id="outputtext" rows="5" cols="30" readonly ></textarea> </p>

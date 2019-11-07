@@ -2,9 +2,9 @@
 	
 	//var serverURL = "ws://johannes.homeip.net:8008/ws";
 	
-	function doConnect()
+	function doConnect(url)
 	{
-		websocket = new WebSocket(document.getElementById("url").value);
+		websocket = new WebSocket(url);
 		websocket.onopen = function(evt) { onOpen(evt) };
 		websocket.onclose = function(evt) { onClose(evt) };
 		websocket.onmessage = function(evt) { onMessage(evt) };

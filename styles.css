@@ -1,57 +1,103 @@
-.shopping-list {
-  background-color: azure;
-}
-
 table {
-  width: 90%;
+  width: 140px;
   display: flex;
   flex-direction: column;
   border: 1px solid black;
-  padding: 8px;
+  padding: 16px 8px;
   box-shadow: 5px 10px #d9d3d2;
 }
 
 table.blockFilled {
-    background-color: darkgrey;
-}
-
-.row > * {
-    flex: 1 1 80px;
+  background-color: darkgrey;
 }
 
 .row.touched {
-    background-color: #c9b5b5;;
-    pointer-events: none;
+  background-color: #c9b5b5;
+  pointer-events: none;
 }
 
 .row {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-around;
+  padding-top: 24px;
 }
 
 td {
-    cursor: pointer;
+  cursor: pointer;
+}
+
+td.param {
+  transform: rotate(-90deg);
+}
+
+tr.header {
+  border-bottom: 1px solid black;
+  padding-bottom: 18px;
+  padding-top: 8px;
+  justify-content: space-around;
+  pointer-events: none;
 }
 
 td.touched > .value {
-    background-color: #635a5a;
-    border-radius: 10px;
-    width: 18px;
-    position: relative;
-    right: 4px;
+  background-color: #635a5a;
+  border-radius: 10px;
+  width: 18px;
+  position: relative;
+  right: 4px;
 }
 
 td.touched > .value > div {
-    position: relative;
-    left: 4px;
-    color: white;
+  position: relative;
+  left: 4px;
+  color: white;
 }
 
 .column {
-    border-left: 1px solid black;
-    padding-left: 4px;
+  border-left: 1px solid black;
+  padding-left: 4px;
 }
 
 .block {
-    padding-top: 16px;
+  padding-top: 32px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.submit {
+  margin-top: 16px;
+  box-shadow: 5px 10px #d9d3d2;
+}
+
+.submit > button {
+  width: 160px;
+  height: 32;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: serif;
+  background-color: #87c789;
+}
+
+.description {
+  width: 300px;
+  padding: 4px;
+  margin-bottom: 32px;
+  background-color: #f5e8c4;
+  text-align: center;
+  border: 1px solid black;
+  box-shadow: 5px 10px #d9d3d2;
+}
+
+.connectRow {
+  display: flex;
+}
+
+.connectRow > input {
+  width: 152px;
+  margin-right: 8px;
+}
+
+.server {
+  margin-right: 8px;
 }
