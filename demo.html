@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+        <meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=0.7, user-scalable=0" />
+
+    <title>Tt - test</title>
+    <meta content="Tarmo Johannes" id="author">
+	
+	<link type="text/css" rel="stylesheet" href="audience.css">
+	<style >
+	body {
+-webkit-touch-callout:none;
+-webkit-user-select:none;
+-khtml-user-select:none;
+-moz-user-select:none;
+-ms-user-select:none;
+user-select:none;
+-o-user-select: none;
+-webkit-tap-highlight-color:rgba(0,0,0,0);
+	}
+	</style>
+    <script src="ws-functions.js"></script> <!-- websocket functions -->
+    <!-- <script src="server_address.js"></script>  default address of the ws server -->
+    <script>
+    
+
+    function onMessage(evt) 
+    {
+            writeToScreen("Message from server: " + evt.data + '\n');
+            var mess_array = evt.data.split(" ");
+            
+            //console.log(mess_array[0]);
+           
+    }
+    
+    function sendValues() {
+		var sendString = "card_" + document.getElementById("card").value 
+			+ "_column_0_" + document.getElementById("frq").value 
+			+ "_column_1_" + document.getElementById("amp").value 
+			+ "_column_2_" + document.getElementById("col").value 
+			+ "_column_3_" + document.getElementById("int").value;
+		doSend(sendString);
+    }
+
+	
+	window.onload = function() {
+		document.getElementById("url").value = "ws://127.0.0.1:9009/ws"; //serverUrl;
+		doConnect();	
+	}
+	
+    </script>
+
+  </head>
+  <body>
+	<h1>Tt test</h1>
+	Card: <input type="number" id="card"  min="0" max="8" value="0"/> <br>
+	FRQ: <input type="range" id="frq" min="0" max="1" value="0.5" step="0.1"/> <br>
+	AMP: <input type="range" id="amp" min="0" max="1" value="0.5" step="0.1"/> <br>
+	COL: <input type="range" id="col" min="0" max="1" value="0.5" step="0.1"/> <br>
+	INT: <input type="range" id="int" min="0" max="1" value="0.5" step="0.1"/> <br>
+	<button id="sendButton" onclick="sendValues();">Send</button>
+    <br>
+    
+    Server: <input value="ws://192.168.1.199:9009/ws" id="url" type="text" >
+    <button type="button" id="connectButton" onclick="doConnect();">Connect</button>
+    <br>
+    <br>
+     <p><textarea id="outputtext" rows="5" cols="30" readonly ></textarea> </p>
+     
+	
+  </body>
+</html>
