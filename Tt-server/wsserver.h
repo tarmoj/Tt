@@ -10,6 +10,11 @@
 QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 QT_FORWARD_DECLARE_CLASS(QWebSocket)
 
+struct VoteResults {
+	int count;
+	double sum;
+	double average;
+} ;
 
 class WsServer : public QObject
 {
@@ -21,8 +26,11 @@ public:
 	void sendMessage(QWebSocket *socket, QString message);
 	void send2all(QString message);
 	void setPaused(bool onOff);
-	void getSum(int card, int column); // TODO: return stuct (?QPair) { int count; double sum; }
+	VoteResults getStatistics(int card, int column); // TODO: return stuct (?QPair) { int count; double sum; }
 	void analyze(int card);
+	void calculateParameters(double f, double a, double c, double i);
+
+
 
 Q_SIGNALS:
     void closed();
@@ -44,6 +52,7 @@ private:
 	int currentClient;
 	bool paused;
     QHash <QString, QVector<double>> resultsHash;
+	double f,a,c,i, x[36];
 };
 
 

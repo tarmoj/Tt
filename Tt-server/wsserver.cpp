@@ -15,7 +15,8 @@ WsServer::WsServer(quint16 port, QObject *parent) :
 	m_clients(),
 	csoundClient(nullptr),
 	currentClient(0),
-	paused(false)
+	paused(false),
+	f(0),a(0), c(0), i(0)
 {
     if (m_pWebSocketServer->listen(QHostAddress::Any, port)) {
         qDebug() << "WsServer listening on port" << port;
@@ -64,7 +65,7 @@ void WsServer::processTextMessage(QString message)
 
     if (message.startsWith("card")) {
         QStringList messageParts = message.split("_");
-		int cardNumber = messageParts[2].toInt();
+		int cardNumber = messageParts[1].toInt();
 		if (cardNumber<0 || cardNumber>8) {
 			qDebug() << "Wrong card: " << cardNumber;
 			return;
@@ -124,33 +125,65 @@ void WsServer::send2all(QString message)
 	}
 }
 
-void WsServer::getSum(int card, int column)
+VoteResults WsServer::getStatistics(int card, int column)
 {
+	VoteResults results;
 	QHashIterator<QString, QVector<double>> i(resultsHash);
 	int count = 0;
 	double sum = 0;
 	while (i.hasNext()) {
-		i.next(); // doesn't it skip the first?
+		i.next();
 		double value = i.value()[card*4 + column];
 		qDebug() << i.key() << " " << value;
 		if (value>=0) {
 			count++;
 			sum += value;
 		}
+
 	}
 	qDebug() << "Count: " << count << " sum: " << sum;
+	results.count = count;
+	results.sum = sum;
+	results.average = sum/count;
+	return results;
 }
 
 void WsServer::analyze(int card)
 {
+
+	VoteResults results;
+	int t = resultsHash.size();  // total numbe of voeters
+	if (t==0) {
+		qDebug() << "No answers, nothing to analyze!";
+		return;
+	}
 	if (card==0) {
-		getSum(0,0);
-		getSum(0, 1);
-		getSum(0, 2);
-		getSum(0, 3);
-	} else {
+		x[1] = getStatistics(0,0).average;
+		x[2] = getStatistics(0, 1).average;
+		x[3] = getStatistics(0, 2).average;
+		x[4] = getStatistics(0, 3).average;
+		f = x[1]; a= x[2]; c=x[3]; i=x[4];
+	} else if (card==1) {
+
+		results = getStatistics(1,0);
+		x[5] = (results.sum + x[1]*(t -results.count )) / t;
+		results = getStatistics(1,1);
+		x[6] = (results.sum + x[2]*(t -results.count )) / t;
+		results = getStatistics(1,2);
+		x[7] = (results.sum + x[3]*(t -results.count )) / t;
+		results = getStatistics(1,3);
+		x[8] = (results.sum + x[4]*(t -results.count )) / t;
+		f = x[5]; a= x[6]; c=x[7]; i=x[8];
 
 	}
+	// etc
+	qDebug() << "f: " << f << "a: " << a << " c: " << c << " i: " << i;
+	// TODO: calculateParameters(f,a,c,i);
+}
+
+void WsServer::calculateParameters(double f, double a, double c, double i)
+{
+	double y,z, e, d, w, v, o, p;
 }
 
 

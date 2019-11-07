@@ -36,5 +36,5 @@ void MainWindow::on_clearButton_clicked()
 
 void MainWindow::on_analyzeButton_clicked()
 {
-	wsServer->analyze(0);
+	wsServer->analyze(ui->cardNumberSpinBox->value());
 }
