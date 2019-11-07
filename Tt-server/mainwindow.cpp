@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(wsServer, SIGNAL(newConnection(int)), this, SLOT(setClientsCount(int)));
 	connect(wsServer, SIGNAL(newMessage(QString)), ui->messagesTextEdit, SLOT(append(QString)) );
+	connect(wsServer, SIGNAL(newParameters(QString)), ui->parametersTextEdit, SLOT(setText(QString)) );
 
 	//connect(wsServer, SIGNAL(pausedChanged(bool)), ui->checkBox, SLOT(setChecked(bool))  );
 
@@ -27,12 +28,6 @@ void MainWindow::setClientsCount(int clientsCount)
 	ui->numberOfClientsLabel->setText(QString::number(clientsCount));
 }
 
-
-
-void MainWindow::on_clearButton_clicked()
-{
-	ui->messagesTextEdit->clear();
-}
 
 void MainWindow::on_analyzeButton_clicked()
 {

@@ -29,6 +29,9 @@ public:
 	VoteResults getStatistics(int card, int column); // TODO: return stuct (?QPair) { int count; double sum; }
 	void analyze(int card);
 	void calculateParameters(double f, double a, double c, double i);
+	QPair<double, double> getIntersection(double d1_x1, double d1_y1, double d1_x2, double d1_y2,
+	  double d2_x1, double d2_y1, double d2_x2, double d2_y2);
+
 
 
 
@@ -36,6 +39,7 @@ Q_SIGNALS:
     void closed();
     void newConnection(int connectionsCount);
 	void newMessage(QString eventString);
+	void newParameters(QString parametersString);
 
 
 
@@ -51,8 +55,7 @@ private:
 	QWebSocket * csoundClient;
 	int currentClient;
 	bool paused;
-    QHash <QString, QVector<double>> resultsHash;
-	double f,a,c,i, x[36];
+    QHash <QString, QVector<double>> resultsHash;	
 };
 
 

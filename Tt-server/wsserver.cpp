@@ -15,8 +15,8 @@ WsServer::WsServer(quint16 port, QObject *parent) :
 	m_clients(),
 	csoundClient(nullptr),
 	currentClient(0),
-	paused(false),
-	f(0),a(0), c(0), i(0)
+	paused(false)/*,
+	f(0),a(0), c(0), i(0)*/
 {
     if (m_pWebSocketServer->listen(QHostAddress::Any, port)) {
         qDebug() << "WsServer listening on port" << port;
@@ -150,7 +150,7 @@ VoteResults WsServer::getStatistics(int card, int column)
 
 void WsServer::analyze(int card)
 {
-
+	double f,a,c,i, x[36];
 	VoteResults results;
 	int t = resultsHash.size();  // total numbe of voeters
 	if (t==0) {
@@ -176,14 +176,77 @@ void WsServer::analyze(int card)
 		f = x[5]; a= x[6]; c=x[7]; i=x[8];
 
 	}
+
 	// etc
 	qDebug() << "f: " << f << "a: " << a << " c: " << c << " i: " << i;
-	// TODO: calculateParameters(f,a,c,i);
+	calculateParameters(f,a,c,i);
+}
+
+QPair<double, double> WsServer::getIntersection(double d1_x1, double d1_y1, double d1_x2, double d1_y2,
+  double d2_x1, double d2_y1, double d2_x2, double d2_y2)  // intersection point of two diagonals given in relative coordinates
+{
+  QPair <double, double> results;
+
+  double deltay1 = d1_y2 - d1_y1;
+  double deltax1 = d1_x2 - d1_x1;
+  double deltay2 = d2_y2 - d2_y1;
+  double deltax2 = d2_x2 - d2_x1;
+  double k1 = deltay1 / deltax1; // tõus
+  double k2 = deltay2 / deltax2;
+
+  double y, x;
+  // formula for y: y = k1 * (x-d1_x1) + d1_y1;
+  // x - result or replacing y into  y = k2 * (x-d2_x1) + d2_y1 and resolving for x:
+  x = ( d1_y1 - k1*d1_x1 + k2*d2_x1 - d2_y1)/(k2-k1);
+  y = k1 * (x-d1_x1) + d1_y1;
+
+  x = (x>1) ? 1 : ( (x<0) ? 0 : x  ); // check for limits
+  y = (y>1) ? 1 : ( (y<0) ? 0 : y  );
+
+  results.first = x; results.second = y;
+
+  return results;
 }
 
 void WsServer::calculateParameters(double f, double a, double c, double i)
 {
 	double y,z, e, d, w, v, o, p;
+	// TODO: on some occasions (if two values exactly the same, gives nan. Maybe some error somewhere... check that f!= c, a != 1
+	if (int(f*100)==int(c*100)) {
+		f += 0.05;
+		qDebug() << "f is even with c";
+	} // kind of hack
+	if (int(a*100)==int(i*100)) {
+		a += 0.05;
+		qDebug() << "a is even with i";
+	} // kind of hack
+	//if (a==c) { a += 0.01;}
+
+
+	QPair <double, double> interSection;
+	interSection = getIntersection(f,a, i, (f>=c) ? 1 : 0,  c,i, a, (f>=c) ? 1 : 0);
+	z = interSection.first; y = interSection.second;
+
+	interSection = getIntersection(c,i, (f>=c) ? 0 : 1,a,  f,a, (f>=c) ? 0 : 1,i);
+	d = interSection.first; e = interSection.second;
+
+	interSection = getIntersection(c,i, f,(a>=i) ? 0 : 1,  f,a, c, (a>=i) ? 0 : 1    );
+	v = interSection.first; w = interSection.second;
+
+	interSection = getIntersection(f,a, c,(a>=i) ? 1 : 0,  c,i, f, (a>=i) ? 1 : 0    );
+	p = interSection.first; o = interSection.second;
+
+	if (f>1) {f=1;}
+	if (a>1) {a=1; }
+
+	QString parametersString;
+	parametersString.sprintf("f:%.2f a:%.2f c:%.2f i:%.2f y:%.2f z:%.2f d:%.2f e:%.2f w:%.2f v:%.2f o:%.2f p:%.2f",
+							 f, a, c, i, y, z, d, e, w, v, o, p );
+	qDebug() << parametersString;
+	emit newParameters(parametersString);
+
+
+
 }
 
 
