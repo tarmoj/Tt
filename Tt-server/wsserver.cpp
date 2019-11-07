@@ -10,12 +10,14 @@ QT_USE_NAMESPACE
 
 WsServer::WsServer(quint16 port, QObject *parent) :
     QObject(parent),
-	m_pWebSocketServer(new QWebSocketServer(QStringLiteral("DarkWarmServer"),
+	currentCard(0),
+	m_pWebSocketServer(new QWebSocketServer(QStringLiteral("TtServer"),
                                             QWebSocketServer::NonSecureMode, this)),
 	m_clients(),
 	csoundClient(nullptr),
 	currentClient(0),
-	paused(false)/*,
+	paused(false)
+	/*,
 	f(0),a(0), c(0), i(0)*/
 {
     if (m_pWebSocketServer->listen(QHostAddress::Any, port)) {
@@ -61,6 +63,12 @@ void WsServer::processTextMessage(QString message)
 
 	emit newMessage(message);
 
+	if (message=="performer") {
+		performers.append(pClient);
+		qDebug() << "Number of performers: " << performers.count();
+		analyze(currentCard); // this is bad solution, you should send the data just to the client who joined...
+	}
+
     // message comes in column_voteNumber_columNumber_value_column // "card_<nr>_column_<nr>_<value>[_column_<nr>_<value>]"
 
     if (message.startsWith("card")) {
@@ -99,6 +107,7 @@ void WsServer::socketDisconnected()
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     if (pClient) {
         m_clients.removeAll(pClient);
+		performers.removeAll(pClient);
         emit newConnection(m_clients.count());
         pClient->deleteLater();
 	}
@@ -108,7 +117,7 @@ void WsServer::socketDisconnected()
 
 void WsServer::sendMessage(QWebSocket *socket, QString message )
 {
-    if (socket == 0)
+	if (socket == nullptr)
     {
         return;
     }
@@ -121,6 +130,13 @@ void WsServer::sendMessage(QWebSocket *socket, QString message )
 void WsServer::send2all(QString message)
 {
 	foreach (QWebSocket *socket, m_clients) {
+		socket->sendTextMessage(message);
+	}
+}
+
+void WsServer::sendToPerformers(QString message)
+{
+	foreach (QWebSocket *socket, performers) {
 		socket->sendTextMessage(message);
 	}
 }
@@ -213,7 +229,7 @@ void WsServer::calculateParameters(double f, double a, double c, double i)
 	double y,z, e, d, w, v, o, p;
 	// TODO: on some occasions (if two values exactly the same, gives nan. Maybe some error somewhere... check that f!= c, a != 1
 	if (int(f*100)==int(c*100)) {
-		f += 0.05;
+		f += 0.05; // TODO: change it back!
 		qDebug() << "f is even with c";
 	} // kind of hack
 	if (int(a*100)==int(i*100)) {
@@ -240,9 +256,10 @@ void WsServer::calculateParameters(double f, double a, double c, double i)
 	if (a>1) {a=1; }
 
 	QString parametersString;
-	parametersString.sprintf("f:%.2f a:%.2f c:%.2f i:%.2f y:%.2f z:%.2f d:%.2f e:%.2f w:%.2f v:%.2f o:%.2f p:%.2f",
+	parametersString.sprintf("f: %.2f a: %.2f c: %.2f i: %.2f y: %.2f z: %.2f d: %.2f e: %.2f w: %.2f v: %.2f o: %.2f p: %.2f",
 							 f, a, c, i, y, z, d, e, w, v, o, p );
 	qDebug() << parametersString;
+	sendToPerformers(parametersString);
 	emit newParameters(parametersString);
 
 

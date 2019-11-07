@@ -31,5 +31,6 @@ void MainWindow::setClientsCount(int clientsCount)
 
 void MainWindow::on_analyzeButton_clicked()
 {
+	wsServer->currentCard = ui->cardNumberSpinBox->value();
 	wsServer->analyze(ui->cardNumberSpinBox->value());
 }

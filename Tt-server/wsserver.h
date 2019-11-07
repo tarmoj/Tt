@@ -20,17 +20,19 @@ class WsServer : public QObject
 {
     Q_OBJECT
 public:
-    explicit WsServer(quint16 port, QObject *parent = NULL);
+	explicit WsServer(quint16 port, QObject *parent = nullptr);
     ~WsServer();
 
 	void sendMessage(QWebSocket *socket, QString message);
 	void send2all(QString message);
+	void sendToPerformers(QString message);
 	void setPaused(bool onOff);
 	VoteResults getStatistics(int card, int column); // TODO: return stuct (?QPair) { int count; double sum; }
 	void analyze(int card);
 	void calculateParameters(double f, double a, double c, double i);
 	QPair<double, double> getIntersection(double d1_x1, double d1_y1, double d1_x2, double d1_y2,
 	  double d2_x1, double d2_y1, double d2_x2, double d2_y2);
+	int currentCard;
 
 
 
@@ -51,11 +53,13 @@ private Q_SLOTS:
 
 private:
     QWebSocketServer *m_pWebSocketServer;
-    QList<QWebSocket *> m_clients;
+	QList<QWebSocket *> m_clients;
+	QList<QWebSocket *> performers;
 	QWebSocket * csoundClient;
 	int currentClient;
 	bool paused;
-    QHash <QString, QVector<double>> resultsHash;	
+	QHash <QString, QVector<double>> resultsHash;
+
 };
 
 

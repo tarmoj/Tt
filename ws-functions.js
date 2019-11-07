@@ -16,6 +16,9 @@
 	{
 		writeToScreen("connected\n");
 		document.getElementById("connectButton").disabled = true;
+		if (typeof(myOnOpen) != "undefined") { // do something when socket is opened
+			myOnOpen();
+		}
 	}
 
 	function onClose(evt)

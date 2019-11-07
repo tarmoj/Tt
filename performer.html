@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type">
-        <meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=0.7, user-scalable=0" />
+        <meta name="viewport" content="width=device-width" />
 
     <title>Tt - performers site</title>
     <meta content="Tarmo Johannes" id="author">
@@ -20,36 +20,67 @@
             writeToScreen("Message from server: " + evt.data + '\n');
             var mess_array = evt.data.split(" ");
             
+            var parameterLetters = ["f", "a", "c","i",  "y", "z", "d", "e", "w", "v", "o", "p" ];
+            
+            for (var i=0; i<parameterLetters.length; i++) {
+				var letter = parameterLetters[i];
+				var index = mess_array.indexOf(letter+":");
+				if (index>=0 && mess_array.length>index+1) {
+					var value = mess_array[index+1];
+					console.log(letter, value);
+					document.getElementById(letter).innerHTML = value;
+					
+				}
+            }
+            
+            
+            
             //console.log(mess_array[0]);
            
     }
     
-    function sendValues() {
-		var sendString = "card_" + document.getElementById("card").value 
-			+ "_column_0_" + document.getElementById("frq").value 
-			+ "_column_1_" + document.getElementById("amp").value 
-			+ "_column_2_" + document.getElementById("col").value 
-			+ "_column_3_" + document.getElementById("int").value;
-		doSend(sendString);
-    }
+//     function sendValues() {
+// 		var sendString = "card_" + document.getElementById("card").value 
+// 			+ "_column_0_" + document.getElementById("frq").value 
+// 			+ "_column_1_" + document.getElementById("amp").value 
+// 			+ "_column_2_" + document.getElementById("col").value 
+// 			+ "_column_3_" + document.getElementById("int").value;
+// 		doSend(sendString);
+//     }
 
 	
 	window.onload = function() {
 		document.getElementById("url").value = serverUrl; //serverUrl;
-		doConnect();	
+		doConnect();
+	}
+	
+	function myOnOpen() {
+		//console.log("myOnOpen");
+		doSend("performer"); // notify that this socket wants to get performer data
 	}
 	
     </script>
 
   </head>
   <body>
-	<h1>Tt test</h1>
-	Card: <input type="number" id="card"  min="0" max="8" value="0"/> <br>
-	FRQ: <input type="range" id="frq" min="0" max="1" value="0.5" step="0.1"/> <br>
-	AMP: <input type="range" id="amp" min="0" max="1" value="0.5" step="0.1"/> <br>
-	COL: <input type="range" id="col" min="0" max="1" value="0.5" step="0.1"/> <br>
-	INT: <input type="range" id="int" min="0" max="1" value="0.5" step="0.1"/> <br>
-	<button id="sendButton" onclick="sendValues();">Send</button>
+	<h1>Tt data for performers</h1>
+	<br>
+	
+	f: <label id="f">-1</label><br> 
+	a: <label id="a">-1</label><br> 
+	c: <label id="c">-1</label> <br>
+	i: <label id="i">-1</label> <br> 
+	<br>
+	y: <label id="y">-1</label> <br>
+	z: <label id="z">-1</label> <br>
+	d: <label id="d">-1</label> <br>
+	e: <label id="e">-1</label> <br>
+	<br>
+	w: <label id="w">-1</label> <br>
+	v: <label id="v">-1</label> <br>
+	o: <label id="o">-1</label> <br>
+	p: <label id="p">-1</label><br>
+	
     <br>
     
     Server: <input value="ws://192.168.1.199:9009/ws" id="url" type="text" >
