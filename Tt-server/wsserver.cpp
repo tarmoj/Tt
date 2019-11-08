@@ -96,7 +96,7 @@ void WsServer::processTextMessage(QString message)
             }
             messageParts.removeAt(dataIndex);
         }
-		resultsHash[peerAdress] = tempData;
+		resultsHash[peerAdress] = tempData; // TUNDUB, et siin ta ikkagi ei kirjuta üle, kui uuesti samalt aadressilt tuleb
     }
 
 }
@@ -252,8 +252,8 @@ void WsServer::calculateParameters(double f, double a, double c, double i)
 	interSection = getIntersection(f,a, c,(a>=i) ? 1 : 0,  c,i, f, (a>=i) ? 1 : 0    );
 	p = interSection.first; o = interSection.second;
 
-	if (f>1) {f=1;}
-	if (a>1) {a=1; }
+//	if (f>1) {f=1;}
+//	if (a>1) {a=1; }
 
 	QString parametersString;
 	parametersString.sprintf("f: %.2f a: %.2f c: %.2f i: %.2f y: %.2f z: %.2f d: %.2f e: %.2f w: %.2f v: %.2f o: %.2f p: %.2f",

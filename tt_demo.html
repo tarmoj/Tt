@@ -35,7 +35,7 @@
             block: 0,
             card: 0,
             data: {},
-            submitDisabled: true
+            submitDisabled: false//true
           };
 
           this.description = {
@@ -100,7 +100,7 @@
                       const touched =
                         currentBlock &&
                         typeof currentBlock[value] === "number" &&
-                        currentBlock[value] === i;
+                        currentBlock[value] === i/10;
 
                       return (
                         <td
@@ -128,15 +128,15 @@
 
             data[block] = {
               ...data[block],
-              [param]: value
+              [param]: value/10
             };
 
-            if (
-              (block === 0 && Object.keys(data[block]).length === 4) ||
-              ([2, 3, 4].includes(block) && Object.keys(data[block]).length === 1)
-            ) {
-              disabled = false;
-            }
+//             if (
+//               (block === 0 && Object.keys(data[block]).length === 4) ||
+//               ([2, 3, 4].includes(block) && Object.keys(data[block]).length === 1)
+//             ) {
+//               disabled = false;
+//             }
 
             return {
               data, submitDisabled: disabled
@@ -151,7 +151,7 @@
                 <div className="server">Server</div>
                 <input
                   className="urlInput"
-                  value="ws://192.168.1.199:9009/ws"
+                  value="ws://192.168.0.114:9009/ws"
                   id="url"
                   type="text"
                 />
