@@ -26,6 +26,7 @@ public:
 	void sendMessage(QWebSocket *socket, QString message);
 	void send2all(QString message);
 	void sendToPerformers(QString message);
+	void sendToVoters(QString message);
 	void setPaused(bool onOff);
 	VoteResults getStatistics(int card, int column); // TODO: return stuct (?QPair) { int count; double sum; }
 	void analyze(int card);
@@ -54,7 +55,7 @@ private Q_SLOTS:
 private:
     QWebSocketServer *m_pWebSocketServer;
 	QList<QWebSocket *> m_clients;
-	QList<QWebSocket *> performers;
+	QList<QWebSocket *> performers, voters;
 	QWebSocket * csoundClient;
 	int currentClient;
 	bool paused;

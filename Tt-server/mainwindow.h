@@ -23,6 +23,8 @@ private slots:
 
 	void on_analyzeButton_clicked();
 
+	void on_cardNumberSpinBox_valueChanged(int value);
+
 private:
 	Ui::MainWindow *ui;
 	WsServer *wsServer;

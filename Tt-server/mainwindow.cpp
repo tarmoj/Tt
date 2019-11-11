@@ -34,3 +34,9 @@ void MainWindow::on_analyzeButton_clicked()
 	wsServer->currentCard = ui->cardNumberSpinBox->value();
 	wsServer->analyze(ui->cardNumberSpinBox->value());
 }
+
+void MainWindow::on_cardNumberSpinBox_valueChanged(int value)
+{
+	wsServer->currentCard = value;
+	wsServer->sendToVoters("card_"+QString::number(value));
+}

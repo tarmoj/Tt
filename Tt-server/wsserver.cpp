@@ -69,6 +69,12 @@ void WsServer::processTextMessage(QString message)
 		analyze(currentCard); // this is bad solution, you should send the data just to the client who joined...
 	}
 
+	if (message=="voter") {
+		voters.append(pClient);
+		qDebug() << "Number of voters: " << voters.count();
+		pClient->sendTextMessage("card_"+QString::number(currentCard));
+	}
+
     // message comes in column_voteNumber_columNumber_value_column // "card_<nr>_column_<nr>_<value>[_column_<nr>_<value>]"
 
     if (message.startsWith("card")) {
@@ -107,7 +113,13 @@ void WsServer::socketDisconnected()
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     if (pClient) {
         m_clients.removeAll(pClient);
-		performers.removeAll(pClient);
+		if (performers.contains(pClient)) {
+			performers.removeAll(pClient);
+		}
+		if (voters.contains(pClient)) {
+			voters.removeAll(pClient);
+		}
+
         emit newConnection(m_clients.count());
         pClient->deleteLater();
 	}
@@ -137,6 +149,14 @@ void WsServer::send2all(QString message)
 void WsServer::sendToPerformers(QString message)
 {
 	foreach (QWebSocket *socket, performers) {
+		socket->sendTextMessage(message);
+	}
+}
+
+void WsServer::sendToVoters(QString message)
+{
+	qDebug()<<Q_FUNC_INFO << message;
+	foreach (QWebSocket *socket, voters) {
 		socket->sendTextMessage(message);
 	}
 }

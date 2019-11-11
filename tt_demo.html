@@ -23,6 +23,26 @@
     <div id="root"></div>
     <script src="ws-functions.js"></script>
     <script src="server_address.js"></script>
+    <script type="text/javascript">
+		
+		var currentCard = 0;
+		
+		function myOnOpen() {
+				console.log("myOnOpen");
+				doSend("voter"); // notify that this socket wants to get voter data
+		}
+		
+		function onMessage(evt) 
+		{
+			writeToScreen("Message from server: " + evt.data + '\n');
+			var mess_array = evt.data.split("_");
+			
+			if (mess_array[0]==="card") {
+				currentCard = parseInt(mess_array[1]);
+			}
+		}
+		
+    </script>
     <script type="text/babel">
       const rootElement = document.getElementById("root");
 
@@ -54,8 +74,11 @@
           this.submit = this.submit.bind(this);
           this.renderDescriptionBox = this.renderDescriptionBox.bind(this);
           this.renderConnectBtn = this.renderConnectBtn.bind(this);
+          
+          
+          
         }
-
+        
         submit() {
           const { data, block, card } = this.state;
           const { FRQ, AMP, COL, INT } = data[block];
