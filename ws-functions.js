@@ -7,7 +7,15 @@
 		websocket = new WebSocket(url);
 		websocket.onopen = function(evt) { onOpen(evt) };
 		websocket.onclose = function(evt) { onClose(evt) };
-		websocket.onmessage = function(evt) { onEvent(evt) };
+		websocket.onmessage = function(evt) { 
+			if (onEvent) {
+				onEvent(evt);
+			}
+		
+			if (onMessage) {
+				onMessage(evt);
+			}
+		};
 		websocket.onerror = function(evt) { onError(evt) };
 		
 	}
