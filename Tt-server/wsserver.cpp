@@ -191,7 +191,9 @@ VoteResults WsServer::getStatistics(int card, int column)
 
 void WsServer::analyze(int card)
 {
-	double x[36];
+	QVector <double> x(36);
+	x.fill(0);
+
 	VoteResults results;
 	int t = resultsHash.size();  // total numbe of voeters
 	if (t==0) {
@@ -205,7 +207,6 @@ void WsServer::analyze(int card)
 		x[4] = getStatistics(0, 3).average;
 		f = x[1]; a= x[2]; c=x[3]; i=x[4];
 	} else if (card==1) {
-
 		results = getStatistics(1,0);
 		x[5] = (results.sum + x[1]*(t -results.count )) / t;
 		results = getStatistics(1,1);
@@ -215,7 +216,6 @@ void WsServer::analyze(int card)
 		results = getStatistics(1,3);
 		x[8] = (results.sum + x[4]*(t -results.count )) / t;
 		f = x[5]; a= x[6]; c=x[7]; i=x[8];
-
 	}
 
 	// etc

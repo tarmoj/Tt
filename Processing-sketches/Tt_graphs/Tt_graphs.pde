@@ -1,10 +1,18 @@
 // Creating graphs for Tt by Udo Kasemets
 
 
+import oscP5.*;
+import netP5.*;
+
+OscP5 oscP5;
+
+
+
 int HORIZONTAL = 0, VERTICAL = 1, DIAGONAL = 2, OTHER = 3; // takes 2 bits
 int SOLID = 0, DASHED = 1; 
 
 float f, a, c, i, y, z, d, e, w, v, o, p; // main parameters for performance
+float new_f, new_a, new_i, new_c;
 int bgColor = 240;
 float margin = 20;
 float side;
@@ -14,19 +22,26 @@ void setup()
 {
   size(600, 700);
   side = width-2*margin;
-  drawLines();
+  oscP5 = new OscP5(this, 7770);
+  frameRate(25);
+  //drawLines();
 } 
 
 void draw()
 {
+  f = lerp(f, new_f, 0.1);
+  a = lerp(a, new_a, 0.1);
+  c = lerp(c, new_c, 0.1);
+  i = lerp(i, new_i, 0.1);
+  drawLines();
 }
 
 void randomValues()
 {
-  f= random(1); // later will be in 10; 
-  a = random(1);
-  c = random(1);
-  i = random(1);
+  new_f= random(1); // later will be in 10; 
+  new_a = random(1);
+  new_c = random(1);
+  new_i = random(1);
   println("f: ", f, " a: ", a, " c: ", c, " i: ", i);
 }
 
@@ -67,7 +82,7 @@ void drawLine(char letter, float value)  // for first 4 lines  - f, a, i, c -  d
     color_ = 170; 
     break;
   }
-  println("direction, ", direction, " type ", type);
+  //println("direction, ", direction, " type ", type);
   // TODO: set drawing type - solid // dashed etc perhaps by letter, f et
 
   // stroke(255); - for color
@@ -117,7 +132,7 @@ float[] getIntersection(float d1_x1, float d1_y1, float d1_x2, float d1_y2,
 
 void drawLines()
 {
-  randomValues();
+  //randomValues();
   background(bgColor);
   fill(255);
   rect(margin, margin, side, side);
@@ -233,6 +248,18 @@ void drawLines()
 void keyPressed() 
 {
   if (key==32) {  // space
+    randomValues();
     drawLines();
+  }
+}
+
+void oscEvent(OscMessage theOscMessage) {
+  String messAddr =  theOscMessage.addrPattern();
+  print("OSC message: " + messAddr);
+  if (messAddr.equals("/Tt")) {
+    new_f = theOscMessage.get(0).floatValue();
+    new_a = theOscMessage.get(1).floatValue();
+    new_c = theOscMessage.get(2).floatValue();
+    new_i = theOscMessage.get(3).floatValue();
   }
 }
