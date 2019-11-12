@@ -32,6 +32,7 @@
 					
 				}
             }
+            window.document.body.style.backgroundColor=getRandomRolor()
             
             
             
@@ -48,6 +49,14 @@
 // 		doSend(sendString);
 //     }
 
+	function getRandomRolor() {
+		var letters = '0123456789'.split('');
+		var color = '#';
+		for (var i = 0; i < 6; i++) {
+			color += letters[Math.round(Math.random() * 10)];
+		}
+		return color;
+	}
 	
 	window.onload = function() {
 		document.getElementById("url").value = serverUrl; //serverUrl;
@@ -62,7 +71,7 @@
     </script>
 
   </head>
-  <body>
+  <body style="background-color:black; color: white">
 	<h1>Tt data for performers</h1>
 	<br>
 	
