@@ -7,7 +7,7 @@ table {
   box-shadow: 5px 10px #d9d3d2;
 }
 
-table.blockFilled {
+table.cardFilled {
   background-color: darkgrey;
 }
 
@@ -100,4 +100,8 @@ td.touched > .value > div {
 
 .server {
   margin-right: 8px;
+}
+
+.helpers {
+  margin-top: 50px;
 }

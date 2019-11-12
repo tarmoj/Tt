@@ -24,24 +24,12 @@
     <script src="ws-functions.js"></script>
     <script src="server_address.js"></script>
     <script type="text/javascript">
-		
-		var currentCard = 0;
-		
-		function myOnOpen() {
-				console.log("myOnOpen");
-				doSend("voter"); // notify that this socket wants to get voter data
-		}
-		
-		function onMessage(evt) 
-		{
-			writeToScreen("Message from server: " + evt.data + '\n');
-			var mess_array = evt.data.split("_");
-			
-			if (mess_array[0]==="card") {
-				currentCard = parseInt(mess_array[1]);
-			}
-		}
-		
+      var currentCard = 0;
+
+      function myOnOpen() {
+        console.log("myOnOpen");
+        doSend("voter"); // notify that this socket wants to get voter data
+      }
     </script>
     <script type="text/babel">
       const rootElement = document.getElementById("root");
@@ -55,7 +43,7 @@
             block: 0,
             card: 0,
             data: {},
-            submitDisabled: false//true
+            submitDisabled: true
           };
 
           this.description = {
@@ -68,27 +56,36 @@
           this.values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
           this.params = ["FRQ", "AMP", "COL", "INT"];
 
-          this.renderBlock = this.renderBlock.bind(this);
+          this.renderCard = this.renderCard.bind(this);
           this.renderHeader = this.renderHeader.bind(this);
           this.onValueClick = this.onValueClick.bind(this);
           this.submit = this.submit.bind(this);
           this.renderDescriptionBox = this.renderDescriptionBox.bind(this);
           this.renderConnectBtn = this.renderConnectBtn.bind(this);
-          
-          
-          
+          this.onEvent = this.onEvent.bind(this);
+          this.getBlockRules = this.getBlockRules.bind(this);
         }
-        
+
         submit() {
-          const { data, block, card } = this.state;
-          const { FRQ, AMP, COL, INT } = data[block];
+          const { data, card } = this.state;
+          const { FRQ = 0.0, AMP = 0.0, COL = 0.0, INT = 0.0 } = data[card];
           const sendString = `card_${card}_column_0_${FRQ}_column_1_${AMP}_column_2_${COL}_column_3_${INT}`;
 
           doSend(sendString);
         }
 
+        onEvent(evt) {
+          writeToScreen("Message from server: " + evt.data + "\n");
+          var mess_array = evt.data.split("_");
+
+          if (mess_array[0] === "card") {
+            this.setState({ card: parseInt(mess_array[1]) });
+            window.navigator.vibrate(200)
+          }
+        }
+
         componentDidMount() {
-          doConnect(serverUrl);
+          doConnect(serverUrl, this.onEvent);
         }
 
         renderHeader() {
@@ -107,29 +104,28 @@
           );
         }
 
-        renderBlock() {
-          const { data, block } = this.state;
-          const currentBlock = data[block];
-          const blockFilled =
-            currentBlock && Object.keys(currentBlock).length === 4;
+        renderCard() {
+          const { data, card } = this.state;
+          const currentCard = data[card];
+          const cardFilled = this.getBlockRules(card, currentCard);
 
           return (
-            <table className={blockFilled ? "blockFilled" : ""}>
+            <table className={cardFilled ? "cardFilled" : ""}>
               {this.renderHeader()}
               {this.values.map((param, i) => {
                 return (
                   <tr key={i} className="row">
                     {this.params.map((value, index) => {
                       const touched =
-                        currentBlock &&
-                        typeof currentBlock[value] === "number" &&
-                        currentBlock[value] === i/10;
+                        currentCard &&
+                        typeof currentCard[value] === "number" &&
+                        currentCard[value] === i / 10;
 
                       return (
                         <td
                           key={index}
                           className={touched ? "touched" : ""}
-                          onClick={() => this.onValueClick(block, value, param)}
+                          onClick={() => this.onValueClick(card, value, param)}
                         >
                           <div class="value">
                             <div>{i}</div>
@@ -144,25 +140,40 @@
           );
         }
 
-        onValueClick(block, param, value) {
+        getBlockRules(card, data) {
+          console.log('--- ', card, data);
+          if (data) {
+            return (
+              (card === 0 && Object.keys(data).length === 4) ||
+              ([2, 3, 4].includes(card) && Object.keys(data).length > 0)
+            );
+          }
+        }
+
+        onValueClick(card, param, value) {
           this.setState(state => {
-            const { data, submitDisabled } = state;
+            const { data, submitDisabled, card } = state;
+            const currentCard = data[card] || {};
             let disabled = submitDisabled;
 
-            data[block] = {
-              ...data[block],
-              [param]: value/10
-            };
+            if (card === 0) {
+              currentCard[card] = {
+                ...currentCard,
+                [param]: value / 10
+              };
+            } else {
+              currentCard[card] = {
+                [param]: value / 10
+              };
+            }
 
-//             if (
-//               (block === 0 && Object.keys(data[block]).length === 4) ||
-//               ([2, 3, 4].includes(block) && Object.keys(data[block]).length === 1)
-//             ) {
-//               disabled = false;
-//             }
+            if (this.getBlockRules(card, currentCard[card])) {
+              disabled = false;
+            }
 
             return {
-              data, submitDisabled: disabled
+              data: currentCard,
+              submitDisabled: disabled
             };
           });
         }
@@ -174,7 +185,7 @@
                 <div className="server">Server</div>
                 <input
                   className="urlInput"
-                  value="ws://192.168.0.114:9009/ws"
+                  value={serverUrl}
                   id="url"
                   type="text"
                 />
@@ -203,17 +214,18 @@
         renderDescriptionBox() {
           return (
             <div className="description">
-              {this.description[this.state.block]}
+              {this.description[this.state.card]}
             </div>
           );
         }
 
         render() {
+          console.log(this.state, " !!!!");
           return (
             <div>
               <div className="block">
                 {this.renderDescriptionBox()}
-                {this.renderBlock()}
+                {this.renderCard()}
                 <div className="submit">
                   <button
                     type="button"
