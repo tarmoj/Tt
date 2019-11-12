@@ -191,7 +191,7 @@ VoteResults WsServer::getStatistics(int card, int column)
 
 void WsServer::analyze(int card)
 {
-	QVector <double> x(36);
+	QVector <double> x(37);
 	x.fill(0);
 
 	VoteResults results;
@@ -206,7 +206,7 @@ void WsServer::analyze(int card)
 		x[3] = getStatistics(0, 2).average;
 		x[4] = getStatistics(0, 3).average;
 		f = x[1]; a= x[2]; c=x[3]; i=x[4];
-	} else if (card==1) {
+	} else if (card==1) { // stupid code, should be written out as loop...
 		results = getStatistics(1,0);
 		x[5] = (results.sum + x[1]*(t -results.count )) / t;
 		results = getStatistics(1,1);
@@ -216,7 +216,64 @@ void WsServer::analyze(int card)
 		results = getStatistics(1,3);
 		x[8] = (results.sum + x[4]*(t -results.count )) / t;
 		f = x[5]; a= x[6]; c=x[7]; i=x[8];
+	} else if (card==2) {
+		results = getStatistics(card,0);
+		x[9] = (results.sum + x[5]*(t -results.count )) / t;
+		results = getStatistics(card,1);
+		x[10] = (results.sum + x[6]*(t -results.count )) / t;
+		results = getStatistics(card,2);
+		x[11] = (results.sum + x[7]*(t -results.count )) / t;
+		results = getStatistics(card,3);
+		x[12] = (results.sum + x[8]*(t -results.count )) / t;
+		f = x[9]; a= x[10]; c=x[11]; i=x[12];
+	} else if (card==3) {
+		results = getStatistics(card,0);
+		x[13] = (results.sum + x[9]*(t -results.count )) / t;
+		results = getStatistics(card,1);
+		x[14] = (results.sum + x[10]*(t -results.count )) / t;
+		results = getStatistics(card,2);
+		x[15] = (results.sum + x[11]*(t -results.count )) / t;
+		results = getStatistics(card,3);
+		x[16] = (results.sum + x[12]*(t -results.count )) / t;
+		f = x[13]; a= x[14]; c=x[15]; i=x[16];
+	} else if (card==4) {
+		results = getStatistics(card,0);
+		x[17] = (results.sum + x[13]*(t -results.count )) / t;
+		results = getStatistics(card,1);
+		x[18] = (results.sum + x[14]*(t -results.count )) / t;
+		results = getStatistics(card,2);
+		x[19] = (results.sum + x[15]*(t -results.count )) / t;
+		results = getStatistics(card,3);
+		x[20] = (results.sum + x[16]*(t -results.count )) / t;
+		f = x[17]; a= x[18]; c=x[19]; i=x[20];
+	} else if (card==5) { // not certain, if this is correct... from here on. Is it averages?
+		x[21] = getStatistics(card,0).average;
+		x[22] = getStatistics(card,1).average;
+		x[23] = getStatistics(card,2).average;
+		x[24] = getStatistics(card,3).average;
+		f = x[21]; a= x[22]; c=x[23]; i=x[24];
+	} else if (card==6) {
+		x[25] = getStatistics(card,0).average;
+		x[26] = getStatistics(card,1).average;
+		x[27] = getStatistics(card,2).average;
+		x[28] = getStatistics(card,3).average;
+		f = x[25]; a= x[26]; c=x[27]; i=x[28];
+	} else if (card==7) {
+		x[29] = getStatistics(card,0).average;
+		x[30] = getStatistics(card,1).average;
+		x[31] = getStatistics(card,2).average;
+		x[32] = getStatistics(card,3).average;
+		f = x[29]; a= x[30]; c=x[31]; i=x[32];
+	} else if (card==8) {
+		x[33] = getStatistics(card,0).average;
+		x[34] = getStatistics(card,1).average;
+		x[35] = getStatistics(card,2).average;
+		x[36] = getStatistics(card,3).average;
+		f = x[33]; a= x[34]; c=x[35]; i=x[36];
 	}
+
+
+
 
 	// etc
 	qDebug() << "f: " << f << "a: " << a << " c: " << c << " i: " << i;
