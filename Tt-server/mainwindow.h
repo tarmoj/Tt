@@ -25,6 +25,12 @@ private slots:
 
 	void on_cardNumberSpinBox_valueChanged(int value);
 
+	void on_setOscButton_clicked();
+
+	void on_sendOscButton_clicked();
+
+	void on_emulateButton_clicked();
+
 private:
 	Ui::MainWindow *ui;
 	WsServer *wsServer;

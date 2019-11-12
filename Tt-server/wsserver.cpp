@@ -16,7 +16,8 @@ WsServer::WsServer(quint16 port, QObject *parent) :
 	m_clients(),
 	csoundClient(nullptr),
 	currentClient(0),
-	paused(false)
+	paused(false),
+	m_oscAddress(nullptr)
 	/*,
 	f(0),a(0), c(0), i(0)*/
 {
@@ -66,7 +67,11 @@ void WsServer::processTextMessage(QString message)
 	if (message=="performer") {
 		performers.append(pClient);
 		qDebug() << "Number of performers: " << performers.count();
-		analyze(currentCard); // this is bad solution, you should send the data just to the client who joined...
+		QString parametersString;
+		parametersString.sprintf("f: %.2f a: %.2f c: %.2f i: %.2f y: %.2f z: %.2f d: %.2f e: %.2f w: %.2f v: %.2f o: %.2f p: %.2f",
+								 f, a, c, i, y, z, d, e, w, v, o, p );
+		pClient->sendTextMessage(parametersString);
+
 	}
 
 	if (message=="voter") {
@@ -186,7 +191,7 @@ VoteResults WsServer::getStatistics(int card, int column)
 
 void WsServer::analyze(int card)
 {
-	double f,a,c,i, x[36];
+	double x[36];
 	VoteResults results;
 	int t = resultsHash.size();  // total numbe of voeters
 	if (t==0) {
@@ -215,7 +220,7 @@ void WsServer::analyze(int card)
 
 	// etc
 	qDebug() << "f: " << f << "a: " << a << " c: " << c << " i: " << i;
-	calculateParameters(f,a,c,i);
+	calculateParameters();
 }
 
 QPair<double, double> WsServer::getIntersection(double d1_x1, double d1_y1, double d1_x2, double d1_y2,
@@ -244,9 +249,33 @@ QPair<double, double> WsServer::getIntersection(double d1_x1, double d1_y1, doub
   return results;
 }
 
-void WsServer::calculateParameters(double f, double a, double c, double i)
+void WsServer::setOscAddress(QString host, quint16 port)
 {
-	double y,z, e, d, w, v, o, p;
+	qDebug()<<"Setting OSC address to: "<<host<<port;
+	if (m_oscAddress == nullptr) {
+		m_oscAddress = new QOscClient(QHostAddress(host), port, this);
+	} else {
+		m_oscAddress->setAddress(QHostAddress(host), port);
+	}
+}
+
+void WsServer::sendMainParameters()
+{
+	m_oscAddress->sendData("/Tt",  QList<QVariant>()<<  f << a << c << i  );
+}
+
+void WsServer::emulate()
+{
+	f = rand() / double(RAND_MAX);
+	a = rand() / double(RAND_MAX);
+	c = rand() / double(RAND_MAX);
+	i = rand() / double(RAND_MAX);
+	calculateParameters();
+}
+
+void WsServer::calculateParameters()
+{
+	//double y,z, e, d, w, v, o, p;
 	// TODO: on some occasions (if two values exactly the same, gives nan. Maybe some error somewhere... check that f!= c, a != 1
 	if (int(f*100)==int(c*100)) {
 		f += 0.05; // TODO: change it back!
@@ -272,14 +301,17 @@ void WsServer::calculateParameters(double f, double a, double c, double i)
 	interSection = getIntersection(f,a, c,(a>=i) ? 1 : 0,  c,i, f, (a>=i) ? 1 : 0    );
 	p = interSection.first; o = interSection.second;
 
-//	if (f>1) {f=1;}
-//	if (a>1) {a=1; }
+	if (f>1) {f=1;}
+	if (a>1) {a=1; }
+//	if (f<0) {f=0;}
+//	if (a>0) {a=0; }
 
 	QString parametersString;
 	parametersString.sprintf("f: %.2f a: %.2f c: %.2f i: %.2f y: %.2f z: %.2f d: %.2f e: %.2f w: %.2f v: %.2f o: %.2f p: %.2f",
 							 f, a, c, i, y, z, d, e, w, v, o, p );
 	qDebug() << parametersString;
 	sendToPerformers(parametersString);
+	sendMainParameters(); // OSC to Processing
 	emit newParameters(parametersString);
 
 

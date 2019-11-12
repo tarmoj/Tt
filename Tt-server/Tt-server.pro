@@ -14,9 +14,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \ # since copied from echoservers
-    wsserver.cpp
+    wsserver.cpp \
+    qosc/qoscclient.cpp \
+    qosc/qoscserver.cpp \
+    qosc/qosctypes.cpp
 
 HEADERS  += mainwindow.h \
-    wsserver.h
+    wsserver.h \
+    qosc/qoscclient.h \
+    qosc/qoscserver.h \
+    qosc/qosctypes.h
 
 FORMS    += mainwindow.ui
