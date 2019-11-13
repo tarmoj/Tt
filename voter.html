@@ -72,6 +72,7 @@
           const sendString = `card_${card}_column_0_${FRQ}_column_1_${AMP}_column_2_${COL}_column_3_${INT}`;
 
           doSend(sendString);
+          this.setState({submitDisabled: true});
         }
 
         onEvent(evt) {
