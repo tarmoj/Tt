@@ -12,7 +12,7 @@
 				onEvent(evt);
 			}
 		
-			if (typeof(onMessage)) {
+			if (typeof(onMessage)!=="undefined") {
 				onMessage(evt);
 			}
 		};
