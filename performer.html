@@ -1,103 +1,192 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta content="text/html; charset=utf-8" http-equiv="content-type">
-        <meta name="viewport" content="width=device-width" />
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width" />
 
     <title>Tt - performers site</title>
-    <meta content="Tarmo Johannes" id="author">
-	
-	<link type="text/css" rel="stylesheet" href="audience.css">
-	<style >
-	</style>
-    <script src="ws-functions.js"></script> <!-- websocket functions -->
-    <script src="server_address.js"></script> <!-- default address of the ws server -->
+    <meta content="Tarmo Johannes" id="author" />
+
+    <link type="text/css" rel="stylesheet" href="audience.css" />
+    <style></style>
+
+    <script src="ws-functions.js"></script>
+    <!-- websocket functions -->
+    <script src="server_address.js"></script>
+    <!-- default address of the ws server -->
     <script>
-    
+      var parameters = {
+        f: [],
+        a: [],
+        c: [],
+        i: [],
+        y: [],
+        z: [],
+        d: [],
+        e: [],
+        w: [],
+        v: [],
+        o: [],
+        p: []
+      };
 
-    function onMessage(evt) 
-    {
-            writeToScreen("Message from server: " + evt.data + '\n');
-            var mess_array = evt.data.split(" ");
-            
-            var parameterLetters = ["f", "a", "c","i",  "y", "z", "d", "e", "w", "v", "o", "p" ];
-            
-            for (var i=0; i<parameterLetters.length; i++) {
-				var letter = parameterLetters[i];
-				var index = mess_array.indexOf(letter+":");
-				if (index>=0 && mess_array.length>index+1) {
-					var value = mess_array[index+1];
-					console.log(letter, value);
-					document.getElementById(letter).innerHTML = value;
-					
-				}
-            }
-            window.document.body.style.backgroundColor=getRandomRolor()
-            
-            
-            
-            //console.log(mess_array[0]);
-           
-    }
-    
-//     function sendValues() {
-// 		var sendString = "card_" + document.getElementById("card").value 
-// 			+ "_column_0_" + document.getElementById("frq").value 
-// 			+ "_column_1_" + document.getElementById("amp").value 
-// 			+ "_column_2_" + document.getElementById("col").value 
-// 			+ "_column_3_" + document.getElementById("int").value;
-// 		doSend(sendString);
-//     }
+      function isLetter(str) {
+        return str.length === 1 && str.match(/[a-z]/i);
+      }
 
-	function getRandomRolor() {
-		var letters = '0123456789'.split('');
-		var color = '#';
-		for (var i = 0; i < 6; i++) {
-			color += letters[Math.round(Math.random() * 10)];
-		}
-		return color;
-	}
-	
-	window.onload = function() {
-		document.getElementById("url").value = serverUrl; //serverUrl;
-		doConnect(serverUrl);
-	}
-	
-	function myOnOpen() {
-		//console.log("myOnOpen");
-		doSend("performer"); // notify that this socket wants to get performer data
-	}
-	
+      function onMessage(evt) {
+        writeToScreen("Message from server: " + evt.data + "\n");
+        var mess_array = evt.data.split(" ");
+        var parameterLetters = Object.keys(parameters);
+
+        for (var i = 0; i < parameterLetters.length; i++) {
+          var letter = parameterLetters[i];
+          var index = mess_array.indexOf(letter + ":");
+          var values = parameters[letter];
+
+          if (index >= 0 && mess_array.length > index + 1) {
+            var value = mess_array[index + 1];
+            console.log(letter, value);
+            values.push(value);
+            parameters[letter] = values;
+
+            showValues(letter, parameters[letter]);
+          }
+        }
+        console.log("heh: ", parameters);
+
+        window.document.body.style.backgroundColor = getRandomRolor();
+
+        //console.log(mess_array[0]);
+      }
+
+      function showValues(letter, values) {
+        var valueString = "";
+
+        values.forEach((value, index, i) => {
+          if (index === 0) {
+            valueString += value;
+          } else {
+            valueString += " --> " + value;
+          }
+        });
+
+        document.getElementById(letter).innerHTML = valueString;
+      }
+      //     function sendValues() {
+      // 		var sendString = "card_" + document.getElementById("card").value
+      // 			+ "_column_0_" + document.getElementById("frq").value
+      // 			+ "_column_1_" + document.getElementById("amp").value
+      // 			+ "_column_2_" + document.getElementById("col").value
+      // 			+ "_column_3_" + document.getElementById("int").value;
+      // 		doSend(sendString);
+      //     }
+
+      function getRandomRolor() {
+        var letters = "0123456789".split("");
+        var color = "#";
+        for (var i = 0; i < 6; i++) {
+          color += letters[Math.round(Math.random() * 10)];
+        }
+        return color;
+      }
+
+      window.onload = function() {
+        document.getElementById("url").value = serverUrl; //serverUrl;
+        doConnect(serverUrl);
+      };
+
+      function myOnOpen() {
+        //console.log("myOnOpen");
+        doSend("performer"); // notify that this socket wants to get performer data
+      }
     </script>
-
   </head>
   <body style="background-color:black; color: white">
-	<h1>Tt data for performers</h1>
-	<br>
-	
-	f: <label id="f">-1</label><br> 
-	a: <label id="a">-1</label><br> 
-	c: <label id="c">-1</label> <br>
-	i: <label id="i">-1</label> <br> 
-	<br>
-	y: <label id="y">-1</label> <br>
-	z: <label id="z">-1</label> <br>
-	d: <label id="d">-1</label> <br>
-	e: <label id="e">-1</label> <br>
-	<br>
-	w: <label id="w">-1</label> <br>
-	v: <label id="v">-1</label> <br>
-	o: <label id="o">-1</label> <br>
-	p: <label id="p">-1</label><br>
-	
-    <br>
-    
-    Server: <input value="ws://192.168.1.199:9009/ws" id="url" type="text" >
-    <button type="button" id="connectButton" onclick="doConnect();">Connect</button>
-    <br>
-    <br>
-     <p><textarea id="outputtext" rows="5" cols="30" readonly ></textarea> </p>
-     
-	
+    <h1>Tt data for performers</h1>
+
+    <div>Raul:</div>
+    <br />
+    <table>
+      <tr>
+        <td>f:</td>
+        <td><label id="f">-1</label> <br /></td>
+      </tr>
+      <tr>
+        <td>a:</td>
+        <td><label id="a">-1</label> <br /></td>
+      </tr>
+      <tr>
+        <td>y:</td>
+        <td><label id="y">-1</label> <br /></td>
+      </tr>
+      <tr>
+        <td>z:</td>
+        <td><label id="z">-1</label> <br /></td>
+      </tr>
+    </table>
+
+    <br />
+    <br />
+
+    <div>Theodore:</div>
+    <br />
+    <table>
+      <tr>
+        <td>w:</td>
+        <td><label id="w">-1</label> <br /></td>
+      </tr>
+      <tr>
+        <td>v:</td>
+        <td><label id="v">-1</label> <br /></td>
+      </tr>
+    </table>
+
+    <br />
+    <br />
+
+    <div>Mihkel:</div>
+    <br />
+    <table>
+      <tr>
+        <td>c:</td>
+        <td><label id="c">-1</label> <br /></td>
+      </tr>
+      <tr>
+        <td>i:</td>
+        <td><label id="i">-1</label> <br /></td>
+      </tr>
+      <tr>
+        <td>d:</td>
+        <td><label id="d">-1</label> <br /></td>
+      </tr>
+      <tr>
+        <td>e:</td>
+        <td><label id="e">-1</label> <br /></td>
+      </tr>
+    </table>
+
+    <br />
+    <table>
+      <tr>
+        <td>o:</td>
+        <td><label id="o">-1</label> <br /></td>
+      </tr>
+      <tr>
+        <td>p:</td>
+        <td><label id="p">-1</label> <br /></td>
+      </tr>
+    </table>
+
+    <br />
+    <br />
+
+    Server: <input value="ws://192.168.1.199:9009/ws" id="url" type="text" />
+    <button type="button" id="connectButton" onclick="doConnect();">
+      Connect
+    </button>
+    <br />
+    <br />
+    <p><textarea id="outputtext" rows="5" cols="30" readonly></textarea></p>
   </body>
 </html>

@@ -3,21 +3,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Tt oter</title>
+    <title>Tt voter</title>
     <script
       type="application/javascript"
       src="https://unpkg.com/react@16.0.0/umd/react.production.min.js"
-      <!-- src="lib/react.production.min.js"-->
     ></script>
     <script
       type="application/javascript"
-       src="https://unpkg.com/react-dom@16.0.0/umd/react-dom.production.min.js" 
-<!--      src="lib/react-dom.production.min.js"-->
+      src="https://unpkg.com/react-dom@16.0.0/umd/react-dom.production.min.js"
     ></script>
     <script
       type="application/javascript"
       src="https://unpkg.com/babel-standalone@6.26.0/babel.js"
-<!--      src="lib/babel-standalone@6.26.0/babel.js"-->
     ></script>
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -27,10 +24,7 @@
     <script src="ws-functions.js"></script>
     <script src="server_address.js"></script>
     <script type="text/javascript">
-      var currentCard = 0;
-
       function myOnOpen() {
-        console.log("myOnOpen");
         doSend("voter"); // notify that this socket wants to get voter data
       }
     </script>
@@ -75,6 +69,7 @@
           const sendString = `card_${card}_column_0_${FRQ}_column_1_${AMP}_column_2_${COL}_column_3_${INT}`;
 
           doSend(sendString);
+          this.setState({ submitDisabled: true });
         }
 
         onEvent(evt) {
@@ -83,7 +78,8 @@
 
           if (mess_array[0] === "card") {
             this.setState({ card: parseInt(mess_array[1]) });
-            window.navigator.vibrate(200)
+            this.setState({ submitDisabled: false });
+            window.navigator.vibrate(200);
           }
         }
 
@@ -144,11 +140,10 @@
         }
 
         getBlockRules(card, data) {
-          console.log('--- ', card, data);
           if (data) {
             return (
               (card === 0 && Object.keys(data).length === 4) ||
-              ([2, 3, 4].includes(card) && Object.keys(data).length > 0)
+              ([1, 2, 3, 4, 5].includes(card) && Object.keys(data).length > 0)
             );
           }
         }
@@ -223,7 +218,6 @@
         }
 
         render() {
-          console.log(this.state, " !!!!");
           return (
             <div>
               <div className="block">
