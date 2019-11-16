@@ -8,11 +8,11 @@
 		websocket.onopen = function(evt) { onOpen(evt) };
 		websocket.onclose = function(evt) { onClose(evt) };
 		websocket.onmessage = function(evt) { 
-			if (onEvent) {
+			if (typeof(onEvent)!=="undefined") {
 				onEvent(evt);
 			}
 		
-			if (onMessage) {
+			if (typeof(onMessage)) {
 				onMessage(evt);
 			}
 		};
@@ -24,7 +24,7 @@
 	{
 		writeToScreen("connected\n");
 		document.getElementById("connectButton").disabled = true;
-		if (typeof(myOnOpen) != "undefined") { // do something when socket is opened
+		if (typeof(myOnOpen) !== "undefined") { // do something when socket is opened
 			myOnOpen();
 		}
 	}
