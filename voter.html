@@ -119,7 +119,7 @@
                       const touched =
                         currentCard &&
                         typeof currentCard[value] === "number" &&
-                        currentCard[value] === i / 10;
+                        currentCard[value] === i / 9;
 
                       return (
                         <td
@@ -159,11 +159,11 @@
             if (card === 0) {
               currentCard[card] = {
                 ...currentCard,
-                [param]: value / 10
+                [param]: value / 9
               };
             } else {
               currentCard[card] = {
-                [param]: value / 10
+                [param]: value / 9
               };
             }
 

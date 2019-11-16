@@ -185,7 +185,7 @@ VoteResults WsServer::getStatistics(int card, int column)
 	qDebug() << "Count: " << count << " sum: " << sum;
 	results.count = count;
 	results.sum = sum;
-	results.average = sum/count;
+	results.average = (count>0) ? sum/count : 0;
 	return results;
 }
 
@@ -335,11 +335,23 @@ void WsServer::calculateParameters()
 	//double y,z, e, d, w, v, o, p;
 	// TODO: on some occasions (if two values exactly the same, gives nan. Maybe some error somewhere... check that f!= c, a != 1
 	if (int(f*100)==int(c*100)) {
-		f += 0.05; // TODO: change it back!
+		f += 0.01; // TODO: change it back!
 		qDebug() << "f is even with c";
 	} // kind of hack
 	if (int(a*100)==int(i*100)) {
-		a += 0.05;
+		a += 0.02;
+		qDebug() << "a is even with i";
+	} // kind of hack
+	if (int(c*100)==int(i*100)) {
+		c += 0.03;
+		qDebug() << "a is even with i";
+	} // kind of hack
+	if (int(c*100)==int(a*100)) {
+		c += 0.04;
+		qDebug() << "a is even with i";
+	} // kind of hack
+	if (int(f*100)==int(i*100)) {
+		i += 0.05;
 		qDebug() << "a is even with i";
 	} // kind of hack
 	//if (a==c) { a += 0.01;}
@@ -358,8 +370,10 @@ void WsServer::calculateParameters()
 	interSection = getIntersection(f,a, c,(a>=i) ? 1 : 0,  c,i, f, (a>=i) ? 1 : 0    );
 	p = interSection.first; o = interSection.second;
 
-	if (f>1) {f=1;}
+	if (f>1) {f=1;} // also kind of hack
 	if (a>1) {a=1; }
+	if (c>1) {c=1;}
+	if (i>1) {i=1; }
 //	if (f<0) {f=0;}
 //	if (a>0) {a=0; }
 
