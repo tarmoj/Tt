@@ -9,6 +9,7 @@ table {
 
 table.cardFilled {
   background-color: darkgrey;
+  pointer-events: none;
 }
 
 .row.touched {
@@ -35,6 +36,10 @@ tr.header {
   padding-bottom: 18px;
   padding-top: 8px;
   justify-content: space-around;
+  pointer-events: none;
+}
+
+td.disabled {
   pointer-events: none;
 }
 
