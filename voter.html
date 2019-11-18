@@ -71,9 +71,15 @@
         }
 
         submit() {
-          const { data, card } = this.state;
+          const { data, card, prevData } = this.state;
           const { FRQ = 0.0, AMP = 0.0, COL = 0.0, INT = 0.0 } = data[card];
-          const sendString = `card_${card}_column_0_${FRQ}_column_1_${AMP}_column_2_${COL}_column_3_${INT}`;
+          const prevKeys = Object.keys(prevData);
+          const freq = prevKeys && prevKeys.includes('FRQ') ? 0 : FRQ;
+          const ampl = prevKeys && prevKeys.includes('AMP') ? 0 : AMP;
+          const colo = prevKeys && prevKeys.includes('COL') ? 0 : COL;
+          const inte = prevKeys && prevKeys.includes('INT') ? 0 : INT;
+          
+          const sendString = `card_${card}_column_0_${freq}_column_1_${ampl}_column_2_${colo}_column_3_${inte}`;
 
           doSend(sendString);
           this.setState({ submitDisabled: true });
@@ -171,7 +177,8 @@
           if ([1, 5].includes(card)) {
             cardData = {};
             if (setState) {
-              this.setState({data: {[card]: {}}})
+              this.setState({prevData:  {}})
+               this.setState({data:  {}})
             }
           } else if ([2, 3, 4, 6, 7, 8].includes(card)) {
             cardData = data[card - 1] || {};
