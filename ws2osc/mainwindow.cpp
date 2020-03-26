@@ -3,7 +3,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
-	ui(new Ui::MainWindow)
+	ui(new Ui::MainWindow),
+	m_oscAddress(nullptr)
 {
 	ui->setupUi(this);
 	// connect to websocket
@@ -20,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// try to open socket on start
 	open();
+	// and set default osc address
+	on_oscSetButton_clicked();
 }
 
 MainWindow::~MainWindow()
@@ -35,6 +38,19 @@ void MainWindow::open()
 	//TODO: handle error
 	qDebug() << m_webSocket.errorString();
 
+}
+
+void MainWindow::setOscAddress(QString host, quint16 port)
+{
+	qDebug()<<"Setting OSC address to: "<<host<<port;
+	if (host.contains("localhost")) {
+		host = "127.0.0.1"; // somehow localhost does not do here...
+	}
+	if (m_oscAddress == nullptr) {
+		m_oscAddress = new QOscClient(QHostAddress(host), port, this);
+	} else {
+		m_oscAddress->setAddress(QHostAddress(host), port);
+	}
 }
 
 
@@ -61,12 +77,50 @@ void MainWindow::onError(QAbstractSocket::SocketError error)
 
 void MainWindow::onTextMessageReceived(QString message)
 {
+	message = message.trimmed();
 	qDebug() << "Message received:" << message;
+
 	ui->messagesTextEdit->appendPlainText(message);
+	if (m_oscAddress && message.startsWith("/")) {
+		QStringList messageParts = message.split(" ");
+		if (messageParts.count()>=3) {
+			QString path = messageParts.takeFirst();
+			QString types = messageParts.takeFirst();
+			QList <QVariant> data;
+			if (types.length()==messageParts.count()) {
+				for (int i=0; i<messageParts.count(); i++) {
+					if (types.at(i)=='i') {
+						data << messageParts[i].toInt();
+					} else if (types.at(i)=='d') {
+						data << messageParts[i].toDouble();
+					} else if (types.at(i)=='f') {
+						data << messageParts[i].toFloat();
+					} else if (types.at(i)=='b') {
+						data << static_cast<bool>(messageParts[i].toInt()); // not correct, probably
+					} else if (types.at(i)=='s') {
+						data << messageParts[i];
+					} else {
+						qDebug() << "Unkonwn type " << types.at(i);
+					}
+
+
+				}
+			qDebug() << path << data;
+			m_oscAddress->sendData(path, data);
+			} else {
+				qDebug() << "types and data number do not match";
+			}
+		}
+	}
 
 }
 
 void MainWindow::on_wsConnectButton_clicked()
 {
 	open();
+}
+
+void MainWindow::on_oscSetButton_clicked()
+{
+	setOscAddress( ui->oscLineEdit->text(), static_cast<quint16>(ui->oscSpinBox->value() ) );
 }

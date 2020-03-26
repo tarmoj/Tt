@@ -26,10 +26,16 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    qosc/qoscclient.cpp \
+    qosc/qoscserver.cpp \
+    qosc/qosctypes.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    qosc/qoscclient.h \
+    qosc/qoscserver.h \
+    qosc/qosctypes.h
 
 FORMS += \
         mainwindow.ui

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QtWebSockets/QWebSocket>
+#include "qosc/qoscclient.h"
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +18,7 @@ public:
 	~MainWindow();
 
 	void open();
+	void setOscAddress(QString host, quint16 port);
 
 private Q_SLOTS:
 	void onConnected();
@@ -27,10 +29,13 @@ private Q_SLOTS:
 
 	void on_wsConnectButton_clicked();
 
+	void on_oscSetButton_clicked();
+
 private:
 	Ui::MainWindow *ui;
 	QWebSocket m_webSocket;
-	//QUrl m_url;
+	QOscClient * m_oscAddress;
+
 
 
 };
