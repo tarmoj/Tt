@@ -17,7 +17,8 @@ WsServer::WsServer(quint16 port, QObject *parent) :
 	csoundClient(nullptr),
 	currentClient(0),
 	paused(false),
-	m_oscAddress(nullptr)
+	m_oscAddress(nullptr),
+	ws2osc_client(nullptr)
 	/*,
 	f(0),a(0), c(0), i(0)*/
 {
@@ -61,6 +62,11 @@ void WsServer::processTextMessage(QString message)
     }
 	qDebug()<<message;
 	QString peerAdress = pClient->peerAddress().toString();
+
+	if (message.startsWith("ws2osc")) { // register ws2osc utility
+		ws2osc_client = pClient;
+		qDebug() << "ws2osc client registered from " << ws2osc_client->peerAddress().toString();
+	}
 
 	emit newMessage(message);
 
@@ -318,7 +324,10 @@ void WsServer::setOscAddress(QString host, quint16 port)
 
 void WsServer::sendMainParameters()
 {
-	m_oscAddress->sendData("/Tt",  QList<QVariant>()<<  f << a << c << i  );
+	QList <QVariant> data;
+	data << f << a << c << i ;
+	m_oscAddress->sendData("/Tt",  data  );
+	osc2ws("/Tt", data);
 }
 
 void WsServer::emulate()
@@ -387,6 +396,36 @@ void WsServer::calculateParameters()
 
 
 
+}
+
+void WsServer::osc2ws(QString path, QList<QVariant> data)
+{
+	qDebug()<< path << data;
+	if (ws2osc_client) {
+		QString messageString, values, typeString;
+
+		foreach (QVariant chunk, data ) {
+			if (chunk.type() == QVariant::Type::Int) {
+				typeString += "i";
+			} else if (chunk.type() == QVariant::Type::String) {
+				typeString += "s";
+			} else if (chunk.type() == QVariant::Type::Double ) {
+				typeString += "d";
+			} else if (chunk.type() == QVariant::Type::Bool ) {
+				typeString += "b";
+
+			} else {
+				qDebug() << "Unknown type: " << chunk.typeName();
+			}
+
+
+			values += chunk.toString() + " ";
+
+		}
+		messageString = path + " " + typeString + " " + values;
+		qDebug() << messageString;
+		ws2osc_client->sendTextMessage(messageString);
+	}
 }
 
 

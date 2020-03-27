@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	wsServer = new WsServer(9009);
+	wsServer = new WsServer(9099);
 
 	connect(wsServer, SIGNAL(newConnection(int)), this, SLOT(setClientsCount(int)));
 	connect(wsServer, SIGNAL(newMessage(QString)), ui->messagesTextEdit, SLOT(append(QString)) );
