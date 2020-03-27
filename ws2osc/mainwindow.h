@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QtWebSockets/QWebSocket>
+#include <QSettings>
 #include "qosc/qoscclient.h"
 
 namespace Ui {
@@ -35,6 +36,7 @@ private:
 	Ui::MainWindow *ui;
 	QWebSocket m_webSocket;
 	QOscClient * m_oscAddress;
+	QSettings * settings;
 
 
 

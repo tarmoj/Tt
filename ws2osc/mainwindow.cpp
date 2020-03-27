@@ -7,6 +7,16 @@ MainWindow::MainWindow(QWidget *parent) :
 	m_oscAddress(nullptr)
 {
 	ui->setupUi(this);
+
+	// restore settings
+	settings  = new QSettings("ws2osc", "config");
+
+	ui->wsLineEdit->setText( settings->value("wsServer", "live.uuu.ee").toString() );
+	ui->wsPortSpinBox->setValue( settings->value("wsPort", 9009).toInt()  );
+	ui->oscLineEdit->setText( settings->value("oscServer", "localhost").toString()  );
+	ui->oscSpinBox->setValue( settings->value("oscPort", 7770).toInt()  );
+
+
 	// connect to websocket
 	//TODO: nupp connect // connected
 	connect(&m_webSocket, &QWebSocket::connected, this, &MainWindow::onConnected);
@@ -35,6 +45,9 @@ void MainWindow::open()
 {
 	QString url =  QString("ws://%1:%2").arg(ui->wsLineEdit->text()).arg(ui->wsPortSpinBox->value());
 	m_webSocket.open(QUrl(url));
+	settings->setValue("wsServer", ui->wsLineEdit->text() );
+	settings->setValue("wsPort", ui->wsPortSpinBox->value() );
+
 	//TODO: handle error
 	qDebug() << m_webSocket.errorString();
 
@@ -43,6 +56,8 @@ void MainWindow::open()
 void MainWindow::setOscAddress(QString host, quint16 port)
 {
 	qDebug()<<"Setting OSC address to: "<<host<<port;
+	settings->setValue("oscServer", host );
+	settings->setValue("oscPort", port );
 	if (host.contains("localhost")) {
 		host = "127.0.0.1"; // somehow localhost does not do here...
 	}
@@ -51,6 +66,8 @@ void MainWindow::setOscAddress(QString host, quint16 port)
 	} else {
 		m_oscAddress->setAddress(QHostAddress(host), port);
 	}
+
+
 }
 
 
