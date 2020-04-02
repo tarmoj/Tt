@@ -65,7 +65,7 @@ private:
 	QWebSocket * csoundClient;
 	int currentClient;
 	bool paused;
-	QHash <QString, QVector<double>> resultsHash;
+	QHash <QWebSocket *, QVector<double>> resultsHash;
 	double f,a,c,i,y,z, e, d, w, v, o, p;
 	QOscClient * m_oscAddress;
 	QWebSocket * ws2osc_client;

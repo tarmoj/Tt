@@ -97,8 +97,8 @@ void WsServer::processTextMessage(QString message)
 		}
 
 		QVector <double> tempData(4*9);
-		if (resultsHash.contains(peerAdress) ) {
-			tempData = resultsHash.value(peerAdress);
+		if (resultsHash.contains(pClient) ) {
+			tempData = resultsHash.value(pClient);
 		} else {
 			tempData.fill(-1);
 		}
@@ -113,7 +113,7 @@ void WsServer::processTextMessage(QString message)
             }
             messageParts.removeAt(dataIndex);
         }
-		resultsHash[peerAdress] = tempData; // TUNDUB, et siin ta ikkagi ei kirjuta üle, kui uuesti samalt aadressilt tuleb
+		resultsHash[pClient] = tempData;
     }
 
 }
@@ -129,6 +129,9 @@ void WsServer::socketDisconnected()
 		}
 		if (voters.contains(pClient)) {
 			voters.removeAll(pClient);
+		}
+		if (resultsHash.contains(pClient)) {
+			resultsHash.remove(pClient);
 		}
 
         emit newConnection(m_clients.count());
@@ -175,13 +178,13 @@ void WsServer::sendToVoters(QString message)
 VoteResults WsServer::getStatistics(int card, int column)
 {
 	VoteResults results;
-	QHashIterator<QString, QVector<double>> i(resultsHash);
+	QHashIterator<QWebSocket *, QVector<double>> i(resultsHash);
 	int count = 0;
 	double sum = 0;
 	while (i.hasNext()) {
 		i.next();
 		double value = i.value()[card*4 + column];
-		qDebug() << i.key() << " " << value;
+		qDebug() << i.key()->peerAddress().toString() << " " << value;
 		if (value>=0) {
 			count++;
 			sum += value;
