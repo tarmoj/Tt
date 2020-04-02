@@ -282,7 +282,7 @@ void WsServer::analyze(int card)
 
 
 	// etc
-	qDebug() << "f: " << f << "a: " << a << " c: " << c << " i: " << i;
+	qDebug() << "count: " << t  << "f: " << f << "a: " << a << " c: " << c << " i: " << i;
 	calculateParameters();
 }
 
@@ -400,7 +400,7 @@ void WsServer::calculateParameters()
 
 void WsServer::osc2ws(QString path, QList<QVariant> data)
 {
-	qDebug()<< path << data;
+	//qDebug()<< path << data;
 	if (ws2osc_client) {
 		QString messageString, values, typeString;
 

@@ -72,12 +72,12 @@
 
         submit() {
           const { data, card, prevData } = this.state;
-          const { FRQ = 0.0, AMP = 0.0, COL = 0.0, INT = 0.0 } = data[card];
+          const { FRQ = -1.0, AMP = -1.0, COL = -1.0, INT = -1.0 } = data[card];
           const prevKeys = Object.keys(prevData);
-          const freq = prevKeys && prevKeys.includes('FRQ') ? 0 : FRQ;
-          const ampl = prevKeys && prevKeys.includes('AMP') ? 0 : AMP;
-          const colo = prevKeys && prevKeys.includes('COL') ? 0 : COL;
-          const inte = prevKeys && prevKeys.includes('INT') ? 0 : INT;
+          const freq = prevKeys && prevKeys.includes('FRQ') ? -1 : FRQ;
+          const ampl = prevKeys && prevKeys.includes('AMP') ? -1 : AMP;
+          const colo = prevKeys && prevKeys.includes('COL') ? -1 : COL;
+          const inte = prevKeys && prevKeys.includes('INT') ? -1 : INT;
           
           const sendString = `card_${card}_column_0_${freq}_column_1_${ampl}_column_2_${colo}_column_3_${inte}`;
 
@@ -227,6 +227,7 @@
                   value={serverUrl}
                   id="url"
                   type="text"
+                  hidden
                 />
                 <button
                   className="conncet"
@@ -244,6 +245,7 @@
                   rows="5"
                   cols="30"
                   readonly
+                  hidden
                 ></textarea>
               </p>
             </div>
