@@ -1,1 +1,1 @@
-var serverUrl = "ws://live.uuu.ee:9099/ws" 
+var serverUrl = "ws://localhost:9099/ws" 

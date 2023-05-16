@@ -31,6 +31,12 @@ private slots:
 
 	void on_emulateButton_clicked();
 
+    void on_pushButton_clicked();
+
+    void on_manualEntryCheckBox_toggled(bool checked);
+
+    void on_votersCountSpinBox_valueChanged(int arg1);
+
 private:
 	Ui::MainWindow *ui;
 	WsServer *wsServer;

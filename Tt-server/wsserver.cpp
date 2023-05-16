@@ -11,14 +11,17 @@ QT_USE_NAMESPACE
 WsServer::WsServer(quint16 port, QObject *parent) :
     QObject(parent),
 	currentCard(0),
-	m_pWebSocketServer(new QWebSocketServer(QStringLiteral("TtServer"),
+    useManualEntry(true),
+    votersCount(0),
+    m_pWebSocketServer(new QWebSocketServer(QStringLiteral("TtServer"),
                                             QWebSocketServer::NonSecureMode, this)),
 	m_clients(),
 	csoundClient(nullptr),
 	currentClient(0),
 	paused(false),
 	m_oscAddress(nullptr),
-	ws2osc_client(nullptr)
+    ws2osc_client(nullptr)
+
 	/*,
 	f(0),a(0), c(0), i(0)*/
 {
@@ -28,6 +31,9 @@ WsServer::WsServer(quint16 port, QObject *parent) :
                 this, &WsServer::onNewConnection);
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &WsServer::closed);
     }
+
+    dataMatrix << QVector<double>() << QVector<double>() << QVector<double>() << QVector<double>();
+
 
 }
 
@@ -175,22 +181,52 @@ void WsServer::sendToVoters(QString message)
 	}
 }
 
+
+void WsServer::enterResults(int column, QString dataString)  // datastring in 0..9
+{
+    QStringList chunks = dataString.simplified().split(" ");
+    dataMatrix[column].clear();
+    //dataMatrix << QVector<double>() << QVector<double>() << QVector<double>() << QVector<double>();
+    foreach (QString chunk, chunks) {
+        bool ok;
+        double number = chunk.toInt(&ok) / 9.0;
+        if (ok) {
+            //resultsHash.insert();
+            dataMatrix[column].append(number); // probably
+        }
+    }
+    qDebug() << "dataMatrix now: " << dataMatrix;
+}
+
 VoteResults WsServer::getStatistics(int card, int column)
 {
 	VoteResults results;
-	QHashIterator<QWebSocket *, QVector<double>> i(resultsHash);
-	int count = 0;
-	double sum = 0;
-	while (i.hasNext()) {
-		i.next();
-		double value = i.value()[card*4 + column];
-		qDebug() << i.key()->peerAddress().toString() << " " << value;
-		if (value>=0) {
-			count++;
-			sum += value;
-		}
+    int count = 0;
+    double sum = 0;
+    if (!useManualEntry) {
+        QHashIterator<QWebSocket *, QVector<double>> i(resultsHash);
 
-	}
+        while (i.hasNext()) {
+            i.next();
+            double value = i.value()[card*4 + column];
+            qDebug() << value;
+            if (value>=0) {
+                count++;
+                sum += value;
+            }
+
+        }
+    } else { // vaja saada antud lahtri arv, summa ja keskine
+       // ignore the card, use the data that is in dataMatrix
+        count = dataMatrix[column].count();
+        for (int i=0;i<count;i++ ) {
+            double value = dataMatrix[column][i];
+            if (value>=0) {
+                sum += value;
+            }
+       }
+
+    }
 	qDebug() << "Count: " << count << " sum: " << sum;
 	results.count = count;
 	results.sum = sum;
@@ -204,7 +240,8 @@ void WsServer::analyze(int card)
 	x.fill(0);
 
 	VoteResults results;
-	int t = resultsHash.size();  // total numbe of voeters
+    qDebug() << "dataMatrix size: " << dataMatrix.size() << dataMatrix.count();
+    int t = useManualEntry ? votersCount :  resultsHash.size();  // total numbe of voters
 	if (t==0) {
 		qDebug() << "No answers, nothing to analyze!";
 		return;
@@ -390,7 +427,7 @@ void WsServer::calculateParameters()
 //	if (a>0) {a=0; }
 
 	QString parametersString;
-	parametersString.sprintf("f: %.2f a: %.2f c: %.2f i: %.2f y: %.2f z: %.2f d: %.2f e: %.2f w: %.2f v: %.2f o: %.2f p: %.2f",
+    parametersString.sprintf("f: %.2f a: %.2f c: %.2f i: %.2f y: %.2f z: %.2f d: %.2f e: %.2f w: %.2f v: %.2f o: %.2f p: %.2f",
 							 f, a, c, i, y, z, d, e, w, v, o, p );
 	qDebug() << parametersString;
 	sendToPerformers(parametersString);

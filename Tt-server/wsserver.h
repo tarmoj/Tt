@@ -30,8 +30,8 @@ public:
 	void sendToPerformers(QString message);
 	void sendToVoters(QString message);
 	void setPaused(bool onOff);
-	VoteResults getStatistics(int card, int column); // TODO: return stuct (?QPair) { int count; double sum; }
-	void analyze(int card);
+    VoteResults getStatistics(int card, int column);
+    void analyze(int card);
 	void calculateParameters();
 	QPair<double, double> getIntersection(double d1_x1, double d1_y1, double d1_x2, double d1_y2,
 	  double d2_x1, double d2_y1, double d2_x2, double d2_y2);
@@ -39,9 +39,12 @@ public:
 	void sendMainParameters(); // sends f,a,c,i to osc address (for Processing)
 	void emulate(); // set random values to  f,a,c,i
 	int currentCard;
+    bool useManualEntry;
+    int votersCount;
 
 
 
+    void enterResults(int column, QString dataString);
 
 Q_SIGNALS:
     void closed();
@@ -69,6 +72,7 @@ private:
 	double f,a,c,i,y,z, e, d, w, v, o, p;
 	QOscClient * m_oscAddress;
 	QWebSocket * ws2osc_client;
+    QVector< QVector <double> > dataMatrix; //for manual data entries -  0 -  f data, 1 -  a, 2 - c, 3 - i;
 
 
 };

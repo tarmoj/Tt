@@ -59,3 +59,25 @@ void MainWindow::on_emulateButton_clicked()
 {
 	wsServer->emulate();
 }
+
+void MainWindow::on_pushButton_clicked()
+{
+    wsServer->enterResults(0, ui->fLineEdit->text());
+    wsServer->enterResults(1, ui->aLineEdit->text());
+    wsServer->enterResults(2, ui->cLineEdit->text());
+    wsServer->enterResults(3, ui->iLineEdit->text());
+
+}
+
+
+void MainWindow::on_manualEntryCheckBox_toggled(bool checked)
+{
+     wsServer->useManualEntry = checked;
+}
+
+
+void MainWindow::on_votersCountSpinBox_valueChanged(int count)
+{
+    wsServer->votersCount = count;
+}
+
