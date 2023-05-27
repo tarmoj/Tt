@@ -38,9 +38,11 @@ public:
 	void setOscAddress(QString host, quint16 port);
 	void sendMainParameters(); // sends f,a,c,i to osc address (for Processing)
 	void emulate(); // set random values to  f,a,c,i
-	int currentCard;
+    void sendReset();
+    int currentCard;
     bool useManualEntry;
     int votersCount;
+
 
 
 

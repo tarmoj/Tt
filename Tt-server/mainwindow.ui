@@ -15,19 +15,8 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0" colspan="3">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Number of clients:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="5">
-     <widget class="QLabel" name="numberOfClientsLabel">
-      <property name="text">
-       <string>0</string>
-      </property>
-     </widget>
+    <item row="7" column="1" colspan="6">
+     <widget class="QLineEdit" name="cLineEdit"/>
     </item>
     <item row="1" column="0">
      <widget class="QLabel" name="label_2">
@@ -36,10 +25,21 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="2">
-     <widget class="QSpinBox" name="cardNumberSpinBox">
-      <property name="maximum">
-       <number>8</number>
+    <item row="1" column="6">
+     <widget class="QPushButton" name="emulateButton">
+      <property name="text">
+       <string>Emulate</string>
+      </property>
+     </widget>
+    </item>
+    <item row="12" column="0" colspan="7">
+     <widget class="QTextEdit" name="parametersTextEdit">
+      <property name="html">
+       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Parameters&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
@@ -50,12 +50,125 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="6">
-     <widget class="QPushButton" name="emulateButton">
+    <item row="2" column="5">
+     <widget class="QLabel" name="label_4">
       <property name="text">
-       <string>Emulate</string>
+       <string>Port:</string>
       </property>
      </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QSpinBox" name="cardNumberSpinBox">
+      <property name="maximum">
+       <number>8</number>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>a</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0" colspan="2">
+     <widget class="QPushButton" name="sendOscButton">
+      <property name="text">
+       <string>Send  OSC</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="6">
+     <widget class="QSpinBox" name="portSpinBox">
+      <property name="maximum">
+       <number>10000</number>
+      </property>
+      <property name="value">
+       <number>7770</number>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="5">
+     <widget class="QLabel" name="numberOfClientsLabel">
+      <property name="text">
+       <string>0</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLabel" name="label_7">
+      <property name="text">
+       <string>c</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="4">
+     <widget class="QSpinBox" name="votersCountSpinBox"/>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_5">
+      <property name="text">
+       <string>f</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="3">
+     <widget class="QLabel" name="label_9">
+      <property name="text">
+       <string>Voters: </string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="0" colspan="3">
+     <widget class="QCheckBox" name="manualEntryCheckBox">
+      <property name="text">
+       <string>Manual entry</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1" colspan="6">
+     <widget class="QLineEdit" name="fLineEdit"/>
+    </item>
+    <item row="4" column="0" colspan="7">
+     <widget class="Line" name="line">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="5" colspan="2">
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>Enter Data</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="1" colspan="6">
+     <widget class="QLineEdit" name="iLineEdit"/>
+    </item>
+    <item row="11" column="0" colspan="7">
+     <widget class="QTextEdit" name="messagesTextEdit">
+      <property name="html">
+       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Messages&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="6">
+     <widget class="QPushButton" name="setOscButton">
+      <property name="text">
+       <string>Set</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1" colspan="6">
+     <widget class="QLineEdit" name="aLineEdit"/>
     </item>
     <item row="2" column="0" colspan="2">
      <widget class="QLabel" name="label_3">
@@ -71,73 +184,12 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="5">
-     <widget class="QLabel" name="label_4">
+    <item row="0" column="0" colspan="3">
+     <widget class="QLabel" name="label">
       <property name="text">
-       <string>Port:</string>
+       <string>Number of clients:</string>
       </property>
      </widget>
-    </item>
-    <item row="2" column="6">
-     <widget class="QSpinBox" name="portSpinBox">
-      <property name="maximum">
-       <number>10000</number>
-      </property>
-      <property name="value">
-       <number>7770</number>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0" colspan="2">
-     <widget class="QPushButton" name="sendOscButton">
-      <property name="text">
-       <string>Send  OSC</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="6">
-     <widget class="QPushButton" name="setOscButton">
-      <property name="text">
-       <string>Set</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0" colspan="7">
-     <widget class="Line" name="line">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QLabel" name="label_5">
-      <property name="text">
-       <string>f</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1" colspan="6">
-     <widget class="QLineEdit" name="fLineEdit"/>
-    </item>
-    <item row="6" column="0">
-     <widget class="QLabel" name="label_6">
-      <property name="text">
-       <string>a</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="1" colspan="6">
-     <widget class="QLineEdit" name="aLineEdit"/>
-    </item>
-    <item row="7" column="0">
-     <widget class="QLabel" name="label_7">
-      <property name="text">
-       <string>c</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="1" colspan="6">
-     <widget class="QLineEdit" name="cLineEdit"/>
     </item>
     <item row="8" column="0">
      <widget class="QLabel" name="label_8">
@@ -146,55 +198,17 @@
       </property>
      </widget>
     </item>
-    <item row="8" column="1" colspan="6">
-     <widget class="QLineEdit" name="iLineEdit"/>
-    </item>
-    <item row="9" column="0" colspan="3">
-     <widget class="QCheckBox" name="manualEntryCheckBox">
+    <item row="9" column="0">
+     <widget class="QPushButton" name="clearButton">
       <property name="text">
-       <string>Manual entry</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
+       <string>Clear</string>
       </property>
      </widget>
     </item>
-    <item row="9" column="3">
-     <widget class="QLabel" name="label_9">
+    <item row="9" column="1">
+     <widget class="QPushButton" name="resetButton">
       <property name="text">
-       <string>Voters: </string>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="4">
-     <widget class="QSpinBox" name="votersCountSpinBox"/>
-    </item>
-    <item row="9" column="5" colspan="2">
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>Enter Data</string>
-      </property>
-     </widget>
-    </item>
-    <item row="10" column="0" colspan="7">
-     <widget class="QTextEdit" name="messagesTextEdit">
-      <property name="html">
-       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Messages&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="11" column="0" colspan="7">
-     <widget class="QTextEdit" name="parametersTextEdit">
-      <property name="html">
-       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Parameters&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>Reset</string>
       </property>
      </widget>
     </item>

@@ -376,7 +376,19 @@ void WsServer::emulate()
 	a = rand() / double(RAND_MAX);
 	c = rand() / double(RAND_MAX);
 	i = rand() / double(RAND_MAX);
-	calculateParameters();
+    calculateParameters();
+}
+
+void WsServer::sendReset()
+{
+    f = 0; a = 0; c = 0; i = 0;
+    y = 0; z = 0; d=0; e=0; w=0; v=0; o=0; p=0;
+    //analyze(currentCard);
+    // not sure if resultHash requires also resetting. probably.
+    dataMatrix << QVector<double>() << QVector<double>() << QVector<double>() << QVector<double>();
+
+    sendToPerformers("reset");
+
 }
 
 void WsServer::calculateParameters()

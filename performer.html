@@ -29,6 +29,27 @@
         o: [],
         p: []
       };
+      
+      function reset() {
+        parameters = {
+                f: [-1],
+                a: [-1],
+                c: [-1],
+                i: [-1],
+                y: [-1],
+                z: [-1],
+                d: [-1],
+                e: [-1],
+                w: [-1],
+                v: [-1],
+                o: [-1],
+                p: [-1]
+            };
+            var parameterLetters = Object.keys(parameters);
+            for (let letter of parameterLetters) {
+                showValues(letter, parameters[letter]);
+            }
+      }
 
       function isLetter(str) {
         return str.length === 1 && str.match(/[a-z]/i);
@@ -37,7 +58,12 @@
       function onMessage(evt) {
         writeToScreen("Message from server: " + evt.data + "\n");
         var mess_array = evt.data.split(" ");
-        var parameterLetters = Object.keys(parameters);
+        
+        if (mess_array[0]==="reset") {
+            console.log("Reset");
+            reset();
+        } else {
+            var parameterLetters = Object.keys(parameters);
 
         for (var i = 0; i < parameterLetters.length; i++) {
           var letter = parameterLetters[i];
@@ -45,15 +71,19 @@
           var values = parameters[letter];
 
           if (index >= 0 && mess_array.length > index + 1) {
-            var value = mess_array[index + 1];
-            console.log(letter, value);
+            //var value = mess_array[index + 1]; // <- orig ( server sends as 0..1 )
+            var value = ( parseFloat( mess_array[index + 1] ) * 9 + 1).toFixed(2);
+            console.log(letter, mess_array[index + 1], value);
             values.push(value);
             parameters[letter] = values;
-
             showValues(letter, parameters[letter]);
+            
           }
         }
         console.log("heh: ", parameters);
+        }
+        
+        
 
         window.document.body.style.backgroundColor = getRandomRolor();
 
@@ -105,23 +135,23 @@
   <body style="background-color:black; color: white">
     <h1>Tt data for performers</h1>
 
-    <div>Raul:</div>
+    <div>SOUND</div>
     <br />
     <table>
       <tr>
-        <td>f:</td>
+        <td>freq:</td>
         <td><label id="f">-1</label> <br /></td>
       </tr>
       <tr>
-        <td>a:</td>
+        <td>amp:</td>
         <td><label id="a">-1</label> <br /></td>
       </tr>
       <tr>
-        <td>y:</td>
+        <td>y (timbre):</td>
         <td><label id="y">-1</label> <br /></td>
       </tr>
       <tr>
-        <td>z:</td>
+        <td>z (pulse):</td>
         <td><label id="z">-1</label> <br /></td>
       </tr>
     </table>
@@ -129,15 +159,15 @@
     <br />
     <br />
 
-    <div>Theodore:</div>
+    <div>TEXT</div>
     <br />
     <table>
       <tr>
-        <td>w:</td>
+        <td>w (quatntitative/number of words):</td>
         <td><label id="w">-1</label> <br /></td>
       </tr>
       <tr>
-        <td>v:</td>
+        <td>v (qualitative/echo-reverb):</td>
         <td><label id="v">-1</label> <br /></td>
       </tr>
     </table>
@@ -145,35 +175,36 @@
     <br />
     <br />
 
-    <div>Mihkel:</div>
+    <div>LIGHT</div>
     <br />
     <table>
       <tr>
-        <td>c:</td>
+        <td>color:</td>
         <td><label id="c">-1</label> <br /></td>
       </tr>
       <tr>
-        <td>i:</td>
+        <td>intensity:</td>
         <td><label id="i">-1</label> <br /></td>
       </tr>
       <tr>
-        <td>d:</td>
+        <td>d (spectrum/movement/quantitative?):</td>
         <td><label id="d">-1</label> <br /></td>
       </tr>
       <tr>
-        <td>e:</td>
+        <td>e  (scope/quantitative?):</td>
         <td><label id="e">-1</label> <br /></td>
       </tr>
     </table>
 
     <br />
+    <div>VISUALS</div>
     <table>
       <tr>
-        <td>o:</td>
+        <td>o (quantitative):</td>
         <td><label id="o">-1</label> <br /></td>
       </tr>
       <tr>
-        <td>p:</td>
+        <td>p (qualitative):</td>
         <td><label id="p">-1</label> <br /></td>
       </tr>
     </table>
@@ -181,8 +212,8 @@
     <br />
     <br />
 
-    Server: <input value="ws://192.168.1.199:9009/ws" id="url" type="text" />
-    <button type="button" id="connectButton" onclick="doConnect();">
+    Server: <input value="ws://192.168.1.199:9009/ws" id="url" type="text" onchange="()=>serverUrl=value"/>
+    <button type="button" id="connectButton" onclick="doConnect(url.value);">
       Connect
     </button>
     <br />

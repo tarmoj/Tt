@@ -37,6 +37,10 @@ private slots:
 
     void on_votersCountSpinBox_valueChanged(int arg1);
 
+    void on_clearButton_clicked();
+
+    void on_resetButton_clicked();
+
 private:
 	Ui::MainWindow *ui;
 	WsServer *wsServer;

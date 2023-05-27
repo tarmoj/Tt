@@ -81,3 +81,18 @@ void MainWindow::on_votersCountSpinBox_valueChanged(int count)
     wsServer->votersCount = count;
 }
 
+
+void MainWindow::on_clearButton_clicked()
+{
+    ui->fLineEdit->clear();
+    ui->aLineEdit->clear();
+    ui->cLineEdit->clear();
+    ui->iLineEdit->clear();
+}
+
+
+void MainWindow::on_resetButton_clicked()
+{
+    wsServer->sendReset();
+}
+
